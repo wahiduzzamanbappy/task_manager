@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'navBarScreens/navbar_cancelled_screen.dart';
-import 'navBarScreens/navbar_completed_screen.dart';
-import 'navBarScreens/navbar_new_task_screen.dart';
-import 'navBarScreens/navbar_progress_screen.dart';
+import 'navBarScreens/navbar_cancelled_list_screen.dart';
+import 'navBarScreens/navbar_completed_list_screen.dart';
+import 'navBarScreens/navbar_new_task_list_screen.dart';
+import 'navBarScreens/navbar_progress_list_screen.dart';
 
 class MainBottomNavScreen extends StatefulWidget {
   const MainBottomNavScreen({super.key});
@@ -15,9 +15,9 @@ class MainBottomNavScreen extends StatefulWidget {
 int _selectedIndex = 0;
 final List<Widget> _screen = const [
   NavbarNewTaskListScreen(),
-  NavbarProgressScreen(),
-  NavbarCompletedScreen(),
-  NavbarCancelledScreen(),
+  NavbarProgressListScreen(),
+  NavbarCompletedListScreen(),
+  NavbarCancelledListScreen(),
 ];
 
 class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
