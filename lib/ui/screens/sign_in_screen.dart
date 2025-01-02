@@ -36,15 +36,29 @@ class _SignInScreenState extends State<SignInScreen> {
                 Text('Get Started With', style: textTheme.titleLarge),
                 const SizedBox(height: 24),
                 TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: _emailTEController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(hintText: 'Email'),
+                  validator: (String? value) {
+                    if (value?.trim().isEmpty ?? true) {
+                      return 'Enter Email Address';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 24),
                 TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: _passwordTEController,
                   obscureText: true,
                   decoration: InputDecoration(hintText: 'Password'),
+                  validator: (String? value) {
+                    if (value?.trim().isEmpty ?? true) {
+                      return 'Enter password';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
@@ -52,7 +66,10 @@ class _SignInScreenState extends State<SignInScreen> {
                     Navigator.pushReplacementNamed(
                         context, MainBottomNavScreen.name);
                   },
-                  child: Icon(Icons.arrow_circle_right_outlined, color: Colors.white,),
+                  child: Icon(
+                    Icons.arrow_circle_right_outlined,
+                    color: Colors.white,
+                  ),
                 ),
                 const SizedBox(height: 48),
                 Center(
@@ -60,7 +77,8 @@ class _SignInScreenState extends State<SignInScreen> {
                     children: [
                       TextButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, ForgotPasswordVerifyEmailScreen.name);
+                          Navigator.pushNamed(
+                              context, ForgotPasswordVerifyEmailScreen.name);
                         },
                         child: Text('Forget Password'),
                       ),
@@ -85,9 +103,10 @@ class _SignInScreenState extends State<SignInScreen> {
           TextSpan(
             text: 'Sign Up',
             style: TextStyle(color: AppColors.themeColor),
-            recognizer: TapGestureRecognizer()..onTap = () {
-              Navigator.pushNamed(context, SignUpScreen.name);
-            },
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                Navigator.pushNamed(context, SignUpScreen.name);
+              },
           ),
         ],
       ),

@@ -5,15 +5,15 @@ import 'package:task_manager/ui/widgets/task_item_widget.dart';
 import 'package:task_manager/ui/widgets/tm_app_bar.dart';
 import '../../widgets/task_status_summary_count_widget.dart';
 
-class NavbarCancelledTaskListScreen extends StatefulWidget {
-  const NavbarCancelledTaskListScreen({super.key});
+class NavbarProgressTaskListScreen extends StatefulWidget {
+  const NavbarProgressTaskListScreen({super.key});
 
   @override
-  State<NavbarCancelledTaskListScreen> createState() =>
-      _NavbarCancelledTaskListScreenState();
+  State<NavbarProgressTaskListScreen> createState() =>
+      _NavbarProgressTaskListScreenState();
 }
 
-class _NavbarCancelledTaskListScreenState extends State<NavbarCancelledTaskListScreen> {
+class _NavbarProgressTaskListScreenState extends State<NavbarProgressTaskListScreen> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -40,7 +40,7 @@ class _NavbarCancelledTaskListScreenState extends State<NavbarCancelledTaskListS
       primary: false,
       itemCount: 10,
       itemBuilder: (context, index) => TaskItemWidget(
-        text: 'Cancelled', color: Colors.redAccent,),
+          text: 'Progress', color: Colors.deepPurple,),
     );
   }
 }

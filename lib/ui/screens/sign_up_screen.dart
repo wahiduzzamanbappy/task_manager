@@ -36,34 +36,69 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Text('Join with us', style: textTheme.titleLarge),
                 const SizedBox(height: 24),
                 TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: _emailTEController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(hintText: 'Email'),
+                  validator: (String? value) {
+                    if (value?.trim().isEmpty ?? true) {
+                      return 'Enter Email Address';
+                    }
+                    return null;
+                  },
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 8),
                 TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: _firstNameTEController,
                   obscureText: true,
                   decoration: InputDecoration(hintText: 'First Name'),
+                  validator: (String? value) {
+                    if (value?.trim().isEmpty ?? true) {
+                      return 'Enter first name';
+                    }
+                    return null;
+                  },
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 8),
                 TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: _lastNameTEController,
                   obscureText: true,
                   decoration: InputDecoration(hintText: 'Last Name'),
+                  validator: (String? value) {
+                    if (value?.trim().isEmpty ?? true) {
+                      return 'Enter last name';
+                    }
+                    return null;
+                  },
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 8),
                 TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: _mobileTEController,
                   keyboardType: TextInputType.phone,
                   obscureText: true,
                   decoration: InputDecoration(hintText: 'Mobile Number'),
+                  validator: (String? value) {
+                    if (value?.trim().isEmpty ?? true) {
+                      return 'Enter valid number';
+                    }
+                    return null;
+                  },
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 8),
                 TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: _passwordTEController,
                   obscureText: true,
                   decoration: InputDecoration(hintText: 'Password'),
+                  validator: (String? value) {
+                    if (value?.trim().isEmpty ?? true) {
+                      return 'Enter password';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
@@ -98,9 +133,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
           TextSpan(
             text: 'Sign In',
             style: TextStyle(color: AppColors.themeColor),
-            recognizer: TapGestureRecognizer()..onTap = () {
-              Navigator.pop(context);
-            },
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                Navigator.pop(context);
+              },
           ),
         ],
       ),

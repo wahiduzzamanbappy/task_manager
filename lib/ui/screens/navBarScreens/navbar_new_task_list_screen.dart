@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/ui/screens/navBarScreens/add_new_task_screen.dart';
+import 'package:task_manager/ui/widgets/screen_background.dart';
+import 'package:task_manager/ui/widgets/task_item_widget.dart';
+import 'package:task_manager/ui/widgets/tm_app_bar.dart';
+import '../../widgets/task_status_summary_count_widget.dart';
 
 class NavbarNewTaskListScreen extends StatefulWidget {
   const NavbarNewTaskListScreen({super.key});
@@ -9,47 +14,67 @@ class NavbarNewTaskListScreen extends StatefulWidget {
 }
 
 class _NavbarNewTaskListScreenState extends State<NavbarNewTaskListScreen> {
-  final TextEditingController _subjectTEController = TextEditingController();
-  final TextEditingController _descriptionTEController =
-      TextEditingController();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 80),
-                Text('Add New Task', style: textTheme.titleLarge),
-                const SizedBox(height: 24),
-                TextFormField(
-                  controller: _subjectTEController,
-                  decoration: InputDecoration(hintText: 'Subject'),
-                ),
-                const SizedBox(height: 24),
-                TextFormField(
-                  controller: _descriptionTEController,
-                  decoration: InputDecoration(hintText: 'Description'),
-                ),
-                const SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: () {},
-                  child: Icon(
-                    Icons.arrow_circle_right_outlined,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 48),
-              ],
-            ),
+      appBar: TMAppBar(textTheme: textTheme),
+      body: ScreenBackground(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              _buildTasksSummaryByStatus(textTheme),
+              _buildTaskListView(),
+            ],
           ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, AddNewTaskScreen.name);
+        },
+        child: Icon(Icons.add),
+      ),
+    );
+  }
+
+  Widget _buildTaskListView() {
+    return ListView.builder(
+      shrinkWrap: true,
+      primary: false,
+      itemCount: 10,
+      itemBuilder: (context, index) => TaskItemWidget(text: 'New', color: Colors.blue,),
+    );
+  }
+
+  Widget _buildTasksSummaryByStatus(TextTheme textTheme) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            TaskStatusSummaryCountWidget(
+              textTheme: textTheme,
+              title: 'New',
+              count: '12',
+            ),
+            TaskStatusSummaryCountWidget(
+              textTheme: textTheme,
+              title: 'Progress',
+              count: '10',
+            ),
+            TaskStatusSummaryCountWidget(
+              textTheme: textTheme,
+              title: 'Completed',
+              count: '8',
+            ),
+            TaskStatusSummaryCountWidget(
+              textTheme: textTheme,
+              title: 'Cancelled',
+              count: '10',
+            ),
+          ],
         ),
       ),
     );

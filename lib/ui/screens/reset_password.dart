@@ -46,7 +46,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 TextFormField(
                   controller: _confirmPasswordTEController,
                   obscureText: true,
-                  decoration: InputDecoration(hintText: 'Confirm Password'),
+                  decoration: InputDecoration(hintText: 'Confirm new Password'),
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
