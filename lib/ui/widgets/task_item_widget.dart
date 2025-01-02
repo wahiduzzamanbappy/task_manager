@@ -45,7 +45,7 @@ class TaskItemWidget extends StatelessWidget {
                       onPressed: () {},
                       icon: Icon(
                         Icons.edit_outlined,
-                        color: Colors.amberAccent,
+                        color: Colors.amber,
                       ),
                     ),
                     IconButton(
