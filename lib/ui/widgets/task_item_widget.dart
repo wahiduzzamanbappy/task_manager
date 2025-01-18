@@ -29,15 +29,11 @@ class TaskItemWidget extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   child: Chip(
-                    label: Text(
-                      text,
+                    label: Text(text,
                       style: TextStyle(color: Colors.white),
                     ),
-                    //  backgroundColor: 'backgroundColor',
                     backgroundColor: color,
                   ),
-                  //backgroundColor: Colors.red,
-                  //backgroundColor: Colors.{red},
                 ),
                 Row(
                   children: [
