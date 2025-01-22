@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:task_manager/data/service/network_caller.dart';
 import 'package:task_manager/data/utils/urls.dart';
 import 'package:task_manager/ui/utils/app_color.dart';
+import 'package:task_manager/ui/widgets/centered_circle_indicator.dart';
 
 import '../widgets/snack_bar_message.dart';
 
@@ -89,6 +90,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     return null;
                   },
                 ),
+
                 const SizedBox(height: 8),
                 TextFormField(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -105,7 +107,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(height: 24),
                 Visibility(
                   visible: _signUpInProgress == false,
-                  replacement: CircularProgressIndicator(),
+                  replacement: CenteredCircularProgressIndicator(),
                   child: ElevatedButton(
                     onPressed: _onTapSignUpButton,
                     child: Icon(

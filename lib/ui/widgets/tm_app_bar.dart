@@ -1,5 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:task_manager/ui/utils/app_color.dart';
+import '../controllers/auth_controller.dart';
+import '../screens/sign_in_screen.dart';
 import '../screens/update_profile_screen.dart';
 
 class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -18,7 +21,13 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: AppColors.themeColor,
       title: Row(
         children: [
-          const CircleAvatar(radius: 16),
+          CircleAvatar(
+            radius: 16,
+            backgroundImage: MemoryImage(
+              base64Decode(AuthController.userModel?.photo ?? ''),
+            ),
+            onBackgroundImageError: (_, __) => const Icon(Icons.person_outline),
+          ),
           const SizedBox(width: 8),
           Expanded(
             child: GestureDetector(
@@ -31,11 +40,11 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Wahiduzzaman Bappy',
+                    AuthController.userModel?.fullName ?? '',
                     style: textTheme.titleSmall?.copyWith(color: Colors.white),
                   ),
                   Text(
-                    'wahidbappy253@gmail.com',
+                    AuthController.userModel?.email ?? '',
                     style: textTheme.bodySmall?.copyWith(color: Colors.white),
                   ),
                 ],
@@ -43,7 +52,11 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () async {
+              await AuthController.clearUserData();
+              Navigator.pushNamedAndRemoveUntil(
+                  context, SignInScreen.name, (predicate) => false);
+            },
             icon: const Icon(
               Icons.logout,
               color: Colors.white,

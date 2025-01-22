@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/ui/screens/navBarScreens/add_new_task_screen.dart';
+import 'package:task_manager/data/models/task_count_by_status_model.dart';
+import 'package:task_manager/data/models/task_list_by_status_model.dart';
+import 'package:task_manager/data/service/network_caller.dart';
+import 'package:task_manager/data/utils/urls.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
+import 'package:task_manager/ui/widgets/snack_bar_message.dart';
 import 'package:task_manager/ui/widgets/task_item_widget.dart';
 import 'package:task_manager/ui/widgets/tm_app_bar.dart';
-import '../../widgets/task_status_summary_count_widget.dart';
 
 class NavbarCancelledTaskListScreen extends StatefulWidget {
   const NavbarCancelledTaskListScreen({super.key});
@@ -13,7 +16,17 @@ class NavbarCancelledTaskListScreen extends StatefulWidget {
       _NavbarCancelledTaskListScreenState();
 }
 
-class _NavbarCancelledTaskListScreenState extends State<NavbarCancelledTaskListScreen> {
+class _NavbarCancelledTaskListScreenState
+    extends State<NavbarCancelledTaskListScreen> {
+  TaskListByStatusModel? cancelledTaskListModel;
+  bool _getCancelledTaskListInProgress = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _getCancelledTaskList();
+  }
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -38,9 +51,26 @@ class _NavbarCancelledTaskListScreenState extends State<NavbarCancelledTaskListS
     return ListView.builder(
       shrinkWrap: true,
       primary: false,
-      itemCount: 10,
+      itemCount: cancelledTaskListModel?.taskList?.length ?? 0,
       itemBuilder: (context, index) => TaskItemWidget(
-        text: 'Cancelled', color: Colors.redAccent,),
+        text: 'Cancelled',
+        color: Colors.redAccent,
+        taskModel: cancelledTaskListModel!.taskList![index],
+      ),
     );
+  }
+
+  Future<void> _getCancelledTaskList() async {
+    _getCancelledTaskListInProgress = true;
+    final NetworkResponse response = await NetworkCaller.getRequest(
+        url: Urls.taskListByStatusUrl('Cancelled'));
+    if (response.isSuccess) {
+      cancelledTaskListModel =
+          TaskListByStatusModel.fromJson(response.responseData!);
+    } else {
+      showSnackBarMessage(context, response.errorMessage);
+    }
+    _getCancelledTaskListInProgress = false;
+    setState(() {});
   }
 }
