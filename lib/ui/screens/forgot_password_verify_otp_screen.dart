@@ -8,12 +8,11 @@ import 'package:task_manager/ui/utils/app_color.dart';
 import 'package:task_manager/ui/widgets/centered_circle_indicator.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 import 'package:task_manager/ui/widgets/snack_bar_message.dart';
-
 import '../../data/utils/urls.dart';
 
 class ForgotPasswordVerifyOtpScreen extends StatefulWidget {
-  const ForgotPasswordVerifyOtpScreen({super.key, this.email});
-  final email;
+  const ForgotPasswordVerifyOtpScreen({super.key});
+
 
   static const String name = '/forgot-password/verify-otp';
 
@@ -31,6 +30,7 @@ class _ForgotPasswordVerifyOtpScreenState
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final String? email = ModalRoute.of(context)?.settings.arguments as String?;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -45,17 +45,19 @@ class _ForgotPasswordVerifyOtpScreenState
                   const SizedBox(height: 80),
                   Text('PIN Verification', style: textTheme.titleLarge),
                   const SizedBox(height: 4),
-                  Text('A 6 digit OTP will be sent to your email address.',
-                      style: textTheme.titleSmall),
+                  Text(
+                    'A 6 digit OTP has been sent to your email: $email.',
+                    style: textTheme.titleSmall,
+                  ),
                   const SizedBox(height: 24),
                   _buildPinCodeTextField(context),
                   const SizedBox(height: 24),
                   Visibility(
                     visible: _verifyOtpInProgress == false,
-                    replacement: CenteredCircularProgressIndicator(),
+                    replacement: const CenteredCircularProgressIndicator(),
                     child: ElevatedButton(
-                      onPressed: _onTapOTPButton,
-                      child: Text('Verify'),
+                      onPressed: () => _onTapOTPButton(email),
+                      child: const Text('Verify'),
                     ),
                   ),
                   const SizedBox(height: 48),
@@ -75,24 +77,40 @@ class _ForgotPasswordVerifyOtpScreenState
     );
   }
 
-  void _onTapOTPButton () {
+  void _onTapOTPButton(String? email) {
     if (_formKey.currentState!.validate()) {
-      _recoveryVerifyOtp();
+      print('email: ${email}');
+      if (email != null) {
+        _recoveryVerifyOtp(email);
+
+      } else {
+        showSnackBarMessage(context, 'Email not found. Please try again.');
+      }
     }
   }
 
-  Future<void> _recoveryVerifyOtp() async {
-    _verifyOtpInProgress = true;
+  Future<void> _recoveryVerifyOtp(String email) async {
+    setState(() {
+      _verifyOtpInProgress = true;
+    });
+
     final NetworkResponse response = await NetworkCaller.getRequest(
-        url: Urls.recoverVerifyOtpUrl(_otpTEController.text, widget.email));
+      url: Urls.recoverVerifyOtpUrl(_otpTEController.text, email),
+    );
+
+    setState(() {
+      _verifyOtpInProgress = false;
+    });
+
     if (response.isSuccess) {
       Navigator.pushNamedAndRemoveUntil(
-          context, ResetPasswordScreen.name, (_) => false);
+        context,
+        ResetPasswordScreen.name,
+            (_) => false,
+      );
     } else {
-      showSnackBarMessage(context, 'Your OTP is incorrect. Try again!');
+      showSnackBarMessage(context, 'OTP is incorrect. Try again!');
     }
-    _verifyOtpInProgress = false;
-    setState(() {});
   }
 
   Widget _buildPinCodeTextField(BuildContext context) {
@@ -111,7 +129,7 @@ class _ForgotPasswordVerifyOtpScreenState
         selectedFillColor: Colors.white,
         inactiveFillColor: Colors.white,
       ),
-      animationDuration: Duration(milliseconds: 300),
+      animationDuration: const Duration(milliseconds: 300),
       backgroundColor: Colors.transparent,
       enableActiveFill: true,
     );
@@ -121,15 +139,18 @@ class _ForgotPasswordVerifyOtpScreenState
     return RichText(
       text: TextSpan(
         text: "Have an account?",
-        style: TextStyle(color: Colors.black45, fontWeight: FontWeight.w600),
+        style: const TextStyle(color: Colors.black45, fontWeight: FontWeight.w600),
         children: [
           TextSpan(
-            text: 'Sign In',
-            style: TextStyle(color: AppColors.themeColor),
+            text: ' Sign In',
+            style: const TextStyle(color: AppColors.themeColor),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
                 Navigator.pushNamedAndRemoveUntil(
-                    context, SignInScreen.name, (predicate) => false);
+                  context,
+                  SignInScreen.name,
+                      (predicate) => false,
+                );
               },
           ),
         ],
@@ -140,7 +161,9 @@ class _ForgotPasswordVerifyOtpScreenState
   @override
   void dispose() {
     _otpTEController.dispose();
-
     super.dispose();
   }
 }
+
+
+

@@ -3,15 +3,12 @@ import 'package:task_manager/data/models/task_count_by_status_model.dart';
 import 'package:task_manager/data/models/task_count_model.dart';
 import 'package:task_manager/data/models/task_list_by_status_model.dart';
 import 'package:task_manager/data/models/task_model.dart';
-
 import 'package:task_manager/data/utils/urls.dart';
-
 import 'package:task_manager/ui/widgets/screen_background.dart';
 import 'package:task_manager/ui/widgets/snack_bar_message.dart';
 import 'package:task_manager/ui/widgets/task_item_widget.dart';
 import 'package:task_manager/ui/widgets/task_status_summary_counter_widget.dart';
 import 'package:task_manager/ui/widgets/tm_app_bar.dart';
-
 import '../../../data/service/network_caller.dart';
 import '../../widgets/centered_circle_indicator.dart';
 import 'add_new_task_screen.dart';
@@ -139,3 +136,4 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
     setState(() {});
   }
 }
+

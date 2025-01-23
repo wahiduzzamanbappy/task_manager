@@ -50,7 +50,7 @@ class _ForgotPasswordVerifyEmailScreenState
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     controller: _emailTEController,
                     keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(hintText: 'Email'),
+                    decoration: const InputDecoration(hintText: 'Email'),
                     validator: (String? value) {
                       if (value?.trim().isEmpty ?? true) {
                         return 'Enter Email Address';
@@ -60,11 +60,11 @@ class _ForgotPasswordVerifyEmailScreenState
                   ),
                   const SizedBox(height: 24),
                   Visibility(
-                    visible: _verifyEmailInProgress == false,
-                    replacement: CenteredCircularProgressIndicator(),
+                    visible: !_verifyEmailInProgress,
+                    replacement: const CenteredCircularProgressIndicator(),
                     child: ElevatedButton(
                       onPressed: _onTapVerifyEmailButton,
-                      child: Icon(
+                      child: const Icon(
                         Icons.arrow_circle_right_outlined,
                         color: Colors.white,
                       ),
@@ -94,28 +94,38 @@ class _ForgotPasswordVerifyEmailScreenState
   }
 
   Future<void> _recoveryVerifyEmail() async {
-    _verifyEmailInProgress = true;
+    setState(() {
+      _verifyEmailInProgress = true;
+    });
+
     final NetworkResponse response = await NetworkCaller.getRequest(
-        url: Urls.recoverVerifyEmailUrl(_emailTEController.text));
+      url: Urls.recoverVerifyEmailUrl(_emailTEController.text),
+    );
+
+    setState(() {
+      _verifyEmailInProgress = false;
+    });
+
     if (response.isSuccess) {
       Navigator.pushReplacementNamed(
-          context, ForgotPasswordVerifyOtpScreen.name);
+        context,
+        ForgotPasswordVerifyOtpScreen.name,
+        arguments: {'email' : _emailTEController.toString()},
+      );
     } else {
-      showSnackBarMessage(context, 'Something went wrong. Try again!.');
+      showSnackBarMessage(context, 'Something went wrong. Try again!');
     }
-    _verifyEmailInProgress = false;
-    setState(() {});
   }
 
   Widget _buildSignUpSection() {
     return RichText(
       text: TextSpan(
         text: "Have an account?",
-        style: TextStyle(color: Colors.black45, fontWeight: FontWeight.w600),
+        style: const TextStyle(color: Colors.black45, fontWeight: FontWeight.w600),
         children: [
           TextSpan(
-            text: 'Sign In',
-            style: TextStyle(color: AppColors.themeColor),
+            text: ' Sign In',
+            style: const TextStyle(color: AppColors.themeColor),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
                 Navigator.pop(context);
