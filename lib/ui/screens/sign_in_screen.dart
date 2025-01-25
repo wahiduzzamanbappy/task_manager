@@ -26,6 +26,14 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _signInProgress = false;
+  bool _obscureText = true;
+
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,8 +66,19 @@ class _SignInScreenState extends State<SignInScreen> {
                   const SizedBox(height: 8),
                   TextFormField(
                     controller: _passwordTEController,
-                    obscureText: true,
-                    decoration: const InputDecoration(hintText: 'Password'),
+                    obscureText: _obscureText,
+                    decoration: InputDecoration(
+                      hintText: 'Password',
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureText
+                              ? Icons.visibility_off
+                              : Icons.visibility, color: Colors.grey.shade500,
+                        ),
+                        onPressed:
+                            _togglePasswordVisibility, // Toggles visibility
+                      ),
+                    ),
                     validator: (String? value) {
                       if (value?.trim().isEmpty ?? true) {
                         return 'Enter your valid password';
@@ -73,7 +92,10 @@ class _SignInScreenState extends State<SignInScreen> {
                     replacement: const CenteredCircularProgressIndicator(),
                     child: ElevatedButton(
                       onPressed: _onTapSignInButton,
-                      child: const Icon(Icons.arrow_circle_right_outlined, color: Colors.white,),
+                      child: const Icon(
+                        Icons.arrow_circle_right_outlined,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 48),
@@ -114,7 +136,7 @@ class _SignInScreenState extends State<SignInScreen> {
       "password": _passwordTEController.text,
     };
     final NetworkResponse response =
-    await NetworkCaller.postRequest(url: Urls.logInUrl, body: requestBody);
+        await NetworkCaller.postRequest(url: Urls.logInUrl, body: requestBody);
     if (response.isSuccess) {
       String token = response.responseData!['token'];
       UserModel userModel = UserModel.fromJson(response.responseData!['data']);
@@ -136,7 +158,7 @@ class _SignInScreenState extends State<SignInScreen> {
       text: TextSpan(
         text: "Don't have an account? ",
         style:
-        const TextStyle(color: Colors.black54, fontWeight: FontWeight.w600),
+            const TextStyle(color: Colors.black54, fontWeight: FontWeight.w600),
         children: [
           TextSpan(
             text: 'Sign up',

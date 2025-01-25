@@ -15,7 +15,7 @@ class MainBottomNavScreen extends StatefulWidget {
 int _selectedIndex = 0;
 final List<Widget> _screen = const [
   NewTaskListScreen(),
-  NavbarProgressTaskListScreen(),
+  NavbarProgressTaskListScreen(status: 'Progress',),
   NavbarCompletedTaskListScreen(),
   NavbarCancelledTaskListScreen(),
 ];

@@ -12,11 +12,13 @@ import 'package:task_manager/ui/utils/app_color.dart';
 
 class TaskManagerApp extends StatelessWidget {
   const TaskManagerApp({super.key});
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey,
       initialRoute: '/',
       theme: ThemeData(
         colorSchemeSeed: AppColors.themeColor,
@@ -60,13 +62,9 @@ class TaskManagerApp extends StatelessWidget {
           widget = const SignInScreen();
         } else if (settings.name == SignUpScreen.name) {
           widget = const SignUpScreen();
-        }else if (settings.name == ForgotPasswordVerifyEmailScreen.name) {
+        } else if (settings.name == ForgotPasswordVerifyEmailScreen.name) {
           widget = const ForgotPasswordVerifyEmailScreen();
-        }else if (settings.name == ForgotPasswordVerifyOtpScreen.name) {
-          widget = const ForgotPasswordVerifyOtpScreen();
-        }else if (settings.name == ResetPasswordScreen.name) {
-          widget = const ResetPasswordScreen();
-        } else if (settings.name == MainBottomNavScreen.name) {
+        }  else if (settings.name == MainBottomNavScreen.name) {
           widget = const MainBottomNavScreen();
         } else if (settings.name == AddNewTaskScreen.name) {
           widget = const AddNewTaskScreen();

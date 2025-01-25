@@ -50,11 +50,11 @@ class _NavbarCompletedTaskListScreenState
     return ListView.builder(
       shrinkWrap: true,
       primary: false,
-      itemCount: completedTaskListModel?.taskList?.length ?? 0,
+      itemCount: completedTaskListModel?.data?.length ?? 0,
       itemBuilder: (context, index) => TaskItemWidget(
         text: 'Completed',
         color: Colors.green,
-        taskModel: completedTaskListModel!.taskList![index],
+        taskModel: completedTaskListModel!.data![index],
       ),
     );
   }

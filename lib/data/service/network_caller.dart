@@ -1,10 +1,9 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
-import 'package:task_manager/app.dart';
 import 'package:task_manager/ui/controllers/auth_controller.dart';
-import 'package:task_manager/ui/screens/sign_in_screen.dart';
+import '../../app.dart';
+import '../../ui/screens/sign_in_screen.dart';
 
 class NetworkResponse {
   final int statusCode;
@@ -26,7 +25,7 @@ class NetworkCaller {
       Uri uri = Uri.parse(url);
       debugPrint('URL => $url');
       Response response =
-      await get(uri, headers: {'token': AuthController.accessToken ?? ''});
+          await get(uri, headers: {'token': AuthController.accessToken ?? ''});
 
       debugPrint('Response Code => ${response.statusCode}');
       debugPrint('Response Data => ${response.body}');
@@ -37,7 +36,7 @@ class NetworkCaller {
             statusCode: response.statusCode,
             responseData: decodedResponse);
       } else if (response.statusCode == 401) {
-        //await _logout();
+        await _logout();
         return NetworkResponse(
             isSuccess: false, statusCode: response.statusCode);
       } else {
@@ -74,7 +73,7 @@ class NetworkCaller {
             statusCode: response.statusCode,
             responseData: decodedResponse);
       } else if (response.statusCode == 401) {
-        //await _logout();
+        await _logout();
         return NetworkResponse(
             isSuccess: false, statusCode: response.statusCode);
       } else {
@@ -90,11 +89,11 @@ class NetworkCaller {
     }
   }
 
- /* static Future<void> _logout() async {
+ static Future<void> _logout() async {
     await AuthController.clearUserData();
     Navigator.pushNamedAndRemoveUntil(
         TaskManagerApp.navigatorKey.currentContext!,
         SignInScreen.name,
             (_) => false);
-  }*/
+  }
 }

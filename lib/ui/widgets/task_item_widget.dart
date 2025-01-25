@@ -88,9 +88,10 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
             content: Text('Are you sure?'),
             actions: [
               TextButton(
-                onPressed: () {
-                  _deleteTaskItem(id);
+                onPressed: () async {
+                  await _deleteTaskItem(id);
                   Navigator.pop(context);
+                  setState(() {});
                 },
                 child: Text(
                   'Confirm',
@@ -116,39 +117,49 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Update Task Status', style: TextStyle(fontWeight: FontWeight.bold),),
+          title: const Text(
+            'Update Task Status',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
                 title: const Text('New', style: TextStyle(color: Colors.blue)),
                 onTap: () {
-                  _updateTaskItem(id, status);
+                  widget.taskModel.status = 'New'; // Update status
+                  _updateTaskItem(id, 'New'); // Pass the updated status
                   Navigator.pop(context);
                 },
               ),
               const Divider(height: 0),
               ListTile(
-                title: const Text('Progress', style: TextStyle(color: Colors.deepPurpleAccent)),
+                title: const Text('Progress',
+                    style: TextStyle(color: Colors.deepPurpleAccent)),
                 onTap: () {
-                  _updateTaskItem(id, status);
+                  widget.taskModel.status = 'Progress'; // Update status
+                  _updateTaskItem(id, 'New'); // Pass the updated status
                   Navigator.pop(context);
                 },
               ),
               const Divider(height: 0),
               ListTile(
-                  title: Text('Completed', style: TextStyle(color: Colors.green)),
-                  onTap: () {
-                    _updateTaskItem(id, status);
-                    Navigator.pop(context);
-                  }),
+                title: Text('Completed', style: TextStyle(color: Colors.green)),
+                onTap: () {
+                  widget.taskModel.status = 'Completed'; // Update status
+                  _updateTaskItem(id, 'New'); // Pass the updated status
+                  Navigator.pop(context);
+                },
+              ),
               const Divider(height: 0),
               ListTile(
-                  title: Text('Cancelled', style: TextStyle(color: Colors.red)),
-                  onTap: () {
-                    _updateTaskItem(id, status);
-                    Navigator.pop(context);
-                  }),
+                title: Text('Cancelled', style: TextStyle(color: Colors.red)),
+                onTap: () {
+                  widget.taskModel.status = 'Cancelled'; // Update status
+                  _updateTaskItem(id, 'New'); // Pass the updated status
+                  Navigator.pop(context);
+                },
+              ),
             ],
           ),
         );
@@ -185,7 +196,6 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
     final NetworkResponse response = await NetworkCaller.getRequest(
         url: Urls.updateStatusUrl(widget.taskModel.sId.toString(),
             widget.taskModel.status.toString()));
-    _deleteTaskInProgress = false;
 
     setState(() {});
     if (response.isSuccess) {
@@ -201,5 +211,7 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
         ),
       );
     }
+    _deleteTaskInProgress = false;
+    setState(() {});
   }
 }

@@ -8,7 +8,8 @@ import '../../../data/utils/urls.dart';
 import '../../widgets/snack_bar_message.dart';
 
 class NavbarProgressTaskListScreen extends StatefulWidget {
-  const NavbarProgressTaskListScreen({super.key});
+  const NavbarProgressTaskListScreen({super.key, required this.status});
+  final String status;
 
   @override
   State<NavbarProgressTaskListScreen> createState() =>
@@ -51,11 +52,11 @@ class _NavbarProgressTaskListScreenState
     return ListView.builder(
       shrinkWrap: true,
       primary: false,
-      itemCount: progressTaskListModel?.taskList?.length ?? 0,
+      itemCount: progressTaskListModel?.data?.length ?? 0,
       itemBuilder: (context, index) => TaskItemWidget(
         text: 'Progress',
         color: Colors.deepPurple,
-        taskModel: progressTaskListModel!.taskList![index],
+        taskModel: progressTaskListModel!.data![index],
       ),
     );
   }
@@ -64,7 +65,7 @@ class _NavbarProgressTaskListScreenState
     _getProgressTaskListInProgress = true;
     setState(() {});
     final NetworkResponse response = await NetworkCaller.getRequest(
-        url: Urls.taskListByStatusUrl('Progress'));
+        url: Urls.taskListByStatusUrl(widget.status));
     if (response.isSuccess) {
       progressTaskListModel =
           TaskListByStatusModel.fromJson(response.responseData!);

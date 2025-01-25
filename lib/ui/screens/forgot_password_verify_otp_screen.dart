@@ -11,9 +11,9 @@ import 'package:task_manager/ui/widgets/snack_bar_message.dart';
 import '../../data/utils/urls.dart';
 
 class ForgotPasswordVerifyOtpScreen extends StatefulWidget {
-  const ForgotPasswordVerifyOtpScreen({super.key});
+  const ForgotPasswordVerifyOtpScreen({super.key, required this.email});
 
-
+  final String email;
   static const String name = '/forgot-password/verify-otp';
 
   @override
@@ -30,7 +30,6 @@ class _ForgotPasswordVerifyOtpScreenState
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final String? email = ModalRoute.of(context)?.settings.arguments as String?;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -46,7 +45,7 @@ class _ForgotPasswordVerifyOtpScreenState
                   Text('PIN Verification', style: textTheme.titleLarge),
                   const SizedBox(height: 4),
                   Text(
-                    'A 6 digit OTP has been sent to your email: $email.',
+                    'A 6 digit OTP has been sent to your email.',
                     style: textTheme.titleSmall,
                   ),
                   const SizedBox(height: 24),
@@ -56,7 +55,9 @@ class _ForgotPasswordVerifyOtpScreenState
                     visible: _verifyOtpInProgress == false,
                     replacement: const CenteredCircularProgressIndicator(),
                     child: ElevatedButton(
-                      onPressed: () => _onTapOTPButton(email),
+                      onPressed: () {
+                        _onTapOTPButton(context);
+                      },
                       child: const Text('Verify'),
                     ),
                   ),
@@ -77,42 +78,6 @@ class _ForgotPasswordVerifyOtpScreenState
     );
   }
 
-  void _onTapOTPButton(String? email) {
-    if (_formKey.currentState!.validate()) {
-      print('email: ${email}');
-      if (email != null) {
-        _recoveryVerifyOtp(email);
-
-      } else {
-        showSnackBarMessage(context, 'Email not found. Please try again.');
-      }
-    }
-  }
-
-  Future<void> _recoveryVerifyOtp(String email) async {
-    setState(() {
-      _verifyOtpInProgress = true;
-    });
-
-    final NetworkResponse response = await NetworkCaller.getRequest(
-      url: Urls.recoverVerifyOtpUrl(_otpTEController.text, email),
-    );
-
-    setState(() {
-      _verifyOtpInProgress = false;
-    });
-
-    if (response.isSuccess) {
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        ResetPasswordScreen.name,
-            (_) => false,
-      );
-    } else {
-      showSnackBarMessage(context, 'OTP is incorrect. Try again!');
-    }
-  }
-
   Widget _buildPinCodeTextField(BuildContext context) {
     return PinCodeTextField(
       appContext: context,
@@ -127,7 +92,7 @@ class _ForgotPasswordVerifyOtpScreenState
         fieldWidth: 50,
         activeFillColor: Colors.white,
         selectedFillColor: Colors.white,
-        inactiveFillColor: Colors.white,
+        inactiveFillColor: Colors.transparent,
       ),
       animationDuration: const Duration(milliseconds: 300),
       backgroundColor: Colors.transparent,
@@ -139,7 +104,8 @@ class _ForgotPasswordVerifyOtpScreenState
     return RichText(
       text: TextSpan(
         text: "Have an account?",
-        style: const TextStyle(color: Colors.black45, fontWeight: FontWeight.w600),
+        style:
+            const TextStyle(color: Colors.black45, fontWeight: FontWeight.w600),
         children: [
           TextSpan(
             text: ' Sign In',
@@ -149,7 +115,7 @@ class _ForgotPasswordVerifyOtpScreenState
                 Navigator.pushNamedAndRemoveUntil(
                   context,
                   SignInScreen.name,
-                      (predicate) => false,
+                  (predicate) => false,
                 );
               },
           ),
@@ -158,12 +124,39 @@ class _ForgotPasswordVerifyOtpScreenState
     );
   }
 
+  void _onTapOTPButton(BuildContext context) {
+    if (_formKey.currentState!.validate()) {
+      _recoveryVerifyOtp(context);
+    } else {
+      showSnackBarMessage(context, 'Email not found. Please try again.');
+    }
+  }
+
+  Future<void> _recoveryVerifyOtp(BuildContext context) async {
+    _verifyOtpInProgress = true;
+    setState(() {});
+
+    final NetworkResponse response = await NetworkCaller.getRequest(
+      url: Urls.recoverVerifyOtpUrl(
+          widget.email.toString(), _otpTEController.text),
+    );
+
+    if (response.isSuccess) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ResetPasswordScreen(
+                  email: widget.email, otp: _otpTEController.text)));
+    } else {
+      showSnackBarMessage(context, 'OTP is incorrect. Try again!');
+    }
+    _verifyOtpInProgress = false;
+    setState(() {});
+  }
+
   @override
   void dispose() {
     _otpTEController.dispose();
     super.dispose();
   }
 }
-
-
-

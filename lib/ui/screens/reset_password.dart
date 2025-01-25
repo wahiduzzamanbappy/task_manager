@@ -11,9 +11,11 @@ import 'package:task_manager/ui/widgets/screen_background.dart';
 import 'package:task_manager/ui/widgets/snack_bar_message.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({super.key});
+  const ResetPasswordScreen({super.key, required this.email, required this.otp});
 
   static const String name = '/forgot_password/reset_password';
+  final String email;
+  final String otp;
 
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
@@ -47,22 +49,35 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   Text('Minimum length of password should be 8 letters.'),
                   const SizedBox(height: 24),
                   TextFormField(
-                    controller: _newPasswordTEController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(hintText: 'New Password'),
-                  ),
+                      controller: _newPasswordTEController,
+                      minLines: 8,
+                      decoration: InputDecoration(hintText: 'New Password'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'New password cannot be empty';
+                        }
+                        return null;
+                      }),
                   const SizedBox(height: 24),
                   TextFormField(
-                    controller: _confirmNewPasswordTEController,
-                    obscureText: true,
-                    decoration: InputDecoration(hintText: 'Confirm new Password'),
-                  ),
+                      controller: _confirmNewPasswordTEController,
+                      minLines: 8,
+                      decoration:
+                          InputDecoration(hintText: 'Confirm new Password'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Confirm password cannot be empty';
+                        }
+                        return null;
+                      }),
                   const SizedBox(height: 24),
                   Visibility(
                     visible: _recoverResetPassInProgress == false,
                     replacement: CenteredCircularProgressIndicator(),
                     child: ElevatedButton(
-                      onPressed: _recoverResetPass,
+                      onPressed:() {
+                        _onTapResetButton();
+                      },
                       child: Text('Confirm'),
                     ),
                   ),
@@ -83,10 +98,25 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     );
   }
 
+  void _onTapResetButton() {
+    if (_formKey.currentState!.validate()) {
+      _recoverResetPass();
+      showSnackBarMessage(context, 'Password Reset Successfully.');
+    }
+  }
+
   Future<void> _recoverResetPass() async {
     _recoverResetPassInProgress = true;
+    setState(() {});
+
+    Map<String, dynamic> requestBody = {
+      "email":widget.email.toString(),
+      "OTP":widget.otp.toString(),
+      "password":_newPasswordTEController.text,
+    };
+
     final NetworkResponse response =
-        await NetworkCaller.postRequest(url: Urls.recoverResetPassUrl);
+        await NetworkCaller.postRequest(url: Urls.recoverResetPassUrl, body: requestBody);
     if (response.isSuccess) {
       Navigator.pushNamedAndRemoveUntil(
           context, SignInScreen.name, (predicate) => false);

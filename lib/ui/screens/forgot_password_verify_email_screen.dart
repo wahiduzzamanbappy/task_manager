@@ -63,7 +63,9 @@ class _ForgotPasswordVerifyEmailScreenState
                     visible: !_verifyEmailInProgress,
                     replacement: const CenteredCircularProgressIndicator(),
                     child: ElevatedButton(
-                      onPressed: _onTapVerifyEmailButton,
+                      onPressed: () {
+                        _onTapVerifyEmailButton(context);
+                      },
                       child: const Icon(
                         Icons.arrow_circle_right_outlined,
                         color: Colors.white,
@@ -87,41 +89,12 @@ class _ForgotPasswordVerifyEmailScreenState
     );
   }
 
-  void _onTapVerifyEmailButton() {
-    if (_formKey.currentState!.validate()) {
-      _recoveryVerifyEmail();
-    }
-  }
-
-  Future<void> _recoveryVerifyEmail() async {
-    setState(() {
-      _verifyEmailInProgress = true;
-    });
-
-    final NetworkResponse response = await NetworkCaller.getRequest(
-      url: Urls.recoverVerifyEmailUrl(_emailTEController.text),
-    );
-
-    setState(() {
-      _verifyEmailInProgress = false;
-    });
-
-    if (response.isSuccess) {
-      Navigator.pushReplacementNamed(
-        context,
-        ForgotPasswordVerifyOtpScreen.name,
-        arguments: {'email' : _emailTEController.toString()},
-      );
-    } else {
-      showSnackBarMessage(context, 'Something went wrong. Try again!');
-    }
-  }
-
   Widget _buildSignUpSection() {
     return RichText(
       text: TextSpan(
         text: "Have an account?",
-        style: const TextStyle(color: Colors.black45, fontWeight: FontWeight.w600),
+        style:
+            const TextStyle(color: Colors.black45, fontWeight: FontWeight.w600),
         children: [
           TextSpan(
             text: ' Sign In',
@@ -134,6 +107,37 @@ class _ForgotPasswordVerifyEmailScreenState
         ],
       ),
     );
+  }
+
+  void _onTapVerifyEmailButton(BuildContext context) {
+    if (_formKey.currentState!.validate()) {
+      _recoveryVerifyEmail(context);
+    }
+  }
+
+  Future<void> _recoveryVerifyEmail(BuildContext context) async {
+    setState(() {
+      _verifyEmailInProgress = true;
+    });
+
+    final NetworkResponse response = await NetworkCaller.getRequest(
+      url: Urls.recoverVerifyEmailUrl(_emailTEController.text),
+    );
+
+    if (response.isSuccess) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              ForgotPasswordVerifyOtpScreen(email: _emailTEController.text),
+        ),
+      );
+    } else {
+      showSnackBarMessage(context, 'Something went wrong. Try again!');
+    }
+    setState(() {
+      _verifyEmailInProgress = false;
+    });
   }
 
   @override

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/data/models/task_count_by_status_model.dart';
 import 'package:task_manager/data/models/task_list_by_status_model.dart';
 import 'package:task_manager/data/service/network_caller.dart';
 import 'package:task_manager/data/utils/urls.dart';
@@ -51,11 +50,11 @@ class _NavbarCancelledTaskListScreenState
     return ListView.builder(
       shrinkWrap: true,
       primary: false,
-      itemCount: cancelledTaskListModel?.taskList?.length ?? 0,
+      itemCount: cancelledTaskListModel?.data?.length ?? 0,
       itemBuilder: (context, index) => TaskItemWidget(
         text: 'Cancelled',
         color: Colors.redAccent,
-        taskModel: cancelledTaskListModel!.taskList![index],
+        taskModel: cancelledTaskListModel!.data![index],
       ),
     );
   }

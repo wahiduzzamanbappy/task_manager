@@ -1,4 +1,3 @@
-
 import 'task_count_model.dart';
 
 class TaskCountByStatusModel {
@@ -16,7 +15,6 @@ class TaskCountByStatusModel {
       });
     }
   }
-
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = status;

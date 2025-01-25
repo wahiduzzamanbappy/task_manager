@@ -34,7 +34,7 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
     _getNewTaskList();
   }
 
-  @override
+/*  @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
@@ -64,16 +64,108 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
         child: const Icon(Icons.add),
       ),
     );
+  }*/
+/*  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    bool isLoading =
+        _getTaskCountByStatusInProgress || _getNewTaskListInProgress;
+
+    return Scaffold(
+      appBar: TMAppBar(
+        textTheme: textTheme,
+      ),
+      body: Stack(
+        children: [
+          ScreenBackground(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  _buildTasksSummaryByStatus(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: _buildTaskListView(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (isLoading)
+            const Center(
+              child: CircularProgressIndicator(),
+            ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, AddNewTaskScreen.name);
+        },
+        child: const Icon(Icons.add),
+      ),
+    );
+  }*/
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    // Unified loading state
+    bool isLoading = _getTaskCountByStatusInProgress || _getNewTaskListInProgress;
+
+    return Scaffold(
+      appBar: TMAppBar(
+        textTheme: textTheme,
+      ),
+      body: Stack(
+        children: [
+          Column(
+            children: [
+              if (_getTaskCountByStatusInProgress || _getNewTaskListInProgress)
+                const LinearProgressIndicator(),
+              Expanded(
+                child: ScreenBackground(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        _buildTasksSummaryByStatus(),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: _buildTaskListView(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          if (isLoading)
+            const Center(
+              child: CircularProgressIndicator(),
+            ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, AddNewTaskScreen.name);
+        },
+        child: const Icon(Icons.add),
+      ),
+    );
   }
+
+
+
+
 
   Widget _buildTaskListView() {
     return ListView.builder(
       shrinkWrap: true,
       primary: false,
-      itemCount: newTaskListModel?.taskList?.length ?? 0,
+      itemCount: newTaskListModel?.data?.length ?? 0,
       itemBuilder: (context, index) {
         return TaskItemWidget(
-          taskModel: newTaskListModel!.taskList![index],
+          taskModel: newTaskListModel!.data![index],
           text: 'New',
           color: Colors.lightBlue,
         );
@@ -136,4 +228,3 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
     setState(() {});
   }
 }
-
