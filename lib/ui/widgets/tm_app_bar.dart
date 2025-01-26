@@ -52,10 +52,8 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
           IconButton(
-            onPressed: () async {
-              await AuthController.clearUserData();
-              Navigator.pushNamedAndRemoveUntil(
-                  context, SignInScreen.name, (predicate) => false);
+            onPressed: () {
+              _logOutFromTaskListScreen(context);
             },
             icon: const Icon(
               Icons.logout,
@@ -65,6 +63,38 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
         ],
       ),
     );
+  }
+  void _logOutFromTaskListScreen(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Log Out'),
+            content: Text('Are you sure?'),
+            actions: [
+              TextButton(
+                onPressed: () async {
+            await AuthController.clearUserData();
+            Navigator.pushNamedAndRemoveUntil(
+                context, SignInScreen.name, (predicate) => false);
+          },
+                child: Text(
+                  'LogOut',
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(color: Colors.green),
+                ),
+              ),
+            ],
+          );
+        });
   }
 
   @override

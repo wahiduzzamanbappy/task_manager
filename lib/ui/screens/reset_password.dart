@@ -11,7 +11,8 @@ import 'package:task_manager/ui/widgets/screen_background.dart';
 import 'package:task_manager/ui/widgets/snack_bar_message.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({super.key, required this.email, required this.otp});
+  const ResetPasswordScreen(
+      {super.key, required this.email, required this.otp});
 
   static const String name = '/forgot_password/reset_password';
   final String email;
@@ -23,11 +24,25 @@ class ResetPasswordScreen extends StatefulWidget {
 
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final TextEditingController _newPasswordTEController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _confirmNewPasswordTEController =
-      TextEditingController();
+  TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _recoverResetPassInProgress = false;
+  bool _obscureText = true;
+  bool _obscureTextOne = true;
+
+  void _toggleNewPasswordVisibility() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
+
+  void _toggleConfirmPasswordVisibility() {
+    setState(() {
+      _obscureTextOne = !_obscureTextOne;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,46 +63,74 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   const SizedBox(height: 4),
                   Text('Minimum length of password should be 8 letters.'),
                   const SizedBox(height: 24),
+                  // New Password TextField
                   TextFormField(
-                      controller: _newPasswordTEController,
-                      minLines: 8,
-                      decoration: InputDecoration(hintText: 'New Password'),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'New password cannot be empty';
-                        }
-                        return null;
-                      }),
+                    controller: _newPasswordTEController,
+                    obscureText: _obscureText,
+                    decoration: InputDecoration(
+                      hintText: 'New Password',
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureText
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          color: Colors.grey.shade500,
+                        ),
+                        onPressed: _toggleNewPasswordVisibility,
+                      ),
+                    ),
+                    validator: (String? value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Enter a valid password';
+                      }
+                      if (value.length < 8) {
+                        return 'Password must be at least 8 characters long';
+                      }
+                      return null;
+                    },
+                  ),
                   const SizedBox(height: 24),
+                  // Confirm Password TextField
                   TextFormField(
-                      controller: _confirmNewPasswordTEController,
-                      minLines: 8,
-                      decoration:
-                          InputDecoration(hintText: 'Confirm new Password'),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Confirm password cannot be empty';
-                        }
-                        return null;
-                      }),
+                    controller: _confirmNewPasswordTEController,
+                    obscureText: _obscureTextOne,
+                    decoration: InputDecoration(
+                      hintText: 'Confirm Password',
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureTextOne
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          color: Colors.grey.shade500,
+                        ),
+                        onPressed: _toggleConfirmPasswordVisibility,
+                      ),
+                    ),
+                    validator: (String? value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Confirm your password';
+                      }
+                      if (value.length < 8) {
+                        return 'Password must be at least 8 characters long';
+                      }
+                      if (value != _newPasswordTEController.text) {
+                        return 'Passwords do not match';
+                      }
+                      return null;
+                    },
+                  ),
                   const SizedBox(height: 24),
                   Visibility(
-                    visible: _recoverResetPassInProgress == false,
+                    visible: !_recoverResetPassInProgress,
                     replacement: CenteredCircularProgressIndicator(),
                     child: ElevatedButton(
-                      onPressed:() {
-                        _onTapResetButton();
-                      },
+                      onPressed: _onTapResetButton,
                       child: Text('Confirm'),
                     ),
                   ),
                   const SizedBox(height: 48),
                   Center(
-                    child: Column(
-                      children: [
-                        _buildSignUpSection(),
-                      ],
-                    ),
+                    child: _buildSignUpSection(),
                   ),
                 ],
               ),
@@ -106,25 +149,29 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   }
 
   Future<void> _recoverResetPass() async {
-    _recoverResetPassInProgress = true;
-    setState(() {});
+    setState(() {
+      _recoverResetPassInProgress = true;
+    });
 
     Map<String, dynamic> requestBody = {
-      "email":widget.email.toString(),
-      "OTP":widget.otp.toString(),
-      "password":_newPasswordTEController.text,
+      "email": widget.email.toString(),
+      "OTP": widget.otp.toString(),
+      "password": _newPasswordTEController.text,
     };
 
-    final NetworkResponse response =
-        await NetworkCaller.postRequest(url: Urls.recoverResetPassUrl, body: requestBody);
+    final NetworkResponse response = await NetworkCaller.postRequest(
+        url: Urls.recoverResetPassUrl, body: requestBody);
+
     if (response.isSuccess) {
       Navigator.pushNamedAndRemoveUntil(
           context, SignInScreen.name, (predicate) => false);
     } else {
       showSnackBarMessage(context, response.errorMessage);
     }
-    _recoverResetPassInProgress = false;
-    setState(() {});
+
+    setState(() {
+      _recoverResetPassInProgress = false;
+    });
   }
 
   Widget _buildSignUpSection() {

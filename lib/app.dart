@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/ui/screens/forgot_password_verify_otp_screen.dart';
 import 'package:task_manager/ui/screens/forgot_password_verify_email_screen.dart';
 import 'package:task_manager/ui/screens/main_bottom_nav_screen.dart';
-import 'package:task_manager/ui/screens/navBarScreens/add_new_task_screen.dart';
-import 'package:task_manager/ui/screens/reset_password.dart';
+import 'package:task_manager/ui/screens/add_new_task_screen.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
 import 'package:task_manager/ui/screens/sign_up_screen.dart';
 import 'package:task_manager/ui/screens/splash_screen.dart';

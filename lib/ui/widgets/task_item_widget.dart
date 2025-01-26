@@ -95,7 +95,7 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
                 },
                 child: Text(
                   'Confirm',
-                  style: TextStyle(color: Colors.green),
+                  style: TextStyle(color: Colors.red),
                 ),
               ),
               TextButton(
@@ -104,7 +104,7 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
                 },
                 child: Text(
                   'Cancel',
-                  style: TextStyle(color: Colors.red),
+                  style: TextStyle(color: Colors.green),
                 ),
               ),
             ],
@@ -127,8 +127,8 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
               ListTile(
                 title: const Text('New', style: TextStyle(color: Colors.blue)),
                 onTap: () {
-                  widget.taskModel.status = 'New'; // Update status
-                  _updateTaskItem(id, 'New'); // Pass the updated status
+                  widget.taskModel.status = 'New';
+                  _updateTaskItem(id, 'New');
                   Navigator.pop(context);
                 },
               ),
@@ -137,8 +137,8 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
                 title: const Text('Progress',
                     style: TextStyle(color: Colors.deepPurpleAccent)),
                 onTap: () {
-                  widget.taskModel.status = 'Progress'; // Update status
-                  _updateTaskItem(id, 'New'); // Pass the updated status
+                  widget.taskModel.status = 'Progress';
+                  _updateTaskItem(id, 'New');
                   Navigator.pop(context);
                 },
               ),
@@ -146,8 +146,8 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
               ListTile(
                 title: Text('Completed', style: TextStyle(color: Colors.green)),
                 onTap: () {
-                  widget.taskModel.status = 'Completed'; // Update status
-                  _updateTaskItem(id, 'New'); // Pass the updated status
+                  widget.taskModel.status = 'Completed';
+                  _updateTaskItem(id, 'New');
                   Navigator.pop(context);
                 },
               ),
@@ -155,8 +155,8 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
               ListTile(
                 title: Text('Cancelled', style: TextStyle(color: Colors.red)),
                 onTap: () {
-                  widget.taskModel.status = 'Cancelled'; // Update status
-                  _updateTaskItem(id, 'New'); // Pass the updated status
+                  widget.taskModel.status = 'Cancelled';
+                  _updateTaskItem(id, 'New');
                   Navigator.pop(context);
                 },
               ),

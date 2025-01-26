@@ -3,7 +3,7 @@ import 'package:task_manager/data/service/network_caller.dart';
 import 'package:task_manager/ui/widgets/centered_circle_indicator.dart';
 import 'package:task_manager/ui/widgets/snack_bar_message.dart';
 
-import '../../../data/utils/urls.dart';
+import '../../data/utils/urls.dart';
 
 class AddNewTaskScreen extends StatefulWidget {
   const AddNewTaskScreen({super.key});

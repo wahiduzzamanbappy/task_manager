@@ -11,7 +11,7 @@ import 'package:task_manager/ui/widgets/task_status_summary_counter_widget.dart'
 import 'package:task_manager/ui/widgets/tm_app_bar.dart';
 import '../../../data/service/network_caller.dart';
 import '../../widgets/centered_circle_indicator.dart';
-import 'add_new_task_screen.dart';
+import '../add_new_task_screen.dart';
 
 class NewTaskListScreen extends StatefulWidget {
   const NewTaskListScreen({super.key});
@@ -34,9 +34,10 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
     _getNewTaskList();
   }
 
-/*  @override
+  @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+
     return Scaffold(
       appBar: TMAppBar(
         textTheme: textTheme,
@@ -45,13 +46,27 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              _buildTasksSummaryByStatus(),
+              Visibility(
+                visible: !_getNewTaskListInProgress,
+                replacement: const Padding(
+                  padding: EdgeInsets.only(top: 10.0),
+                  child: Center(
+                    child: LinearProgressIndicator(),
+                  ),
+                ),
+                child: _buildTasksSummaryByStatus(),
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Visibility(
-                    visible: _getNewTaskListInProgress == false,
-                    replacement: const CenteredCircularProgressIndicator(),
-                    child: _buildTaskListView()),
+                  visible: !_getNewTaskListInProgress,
+                  replacement: const Padding(
+                    padding: EdgeInsets.only(top: 280),
+                    // Center progress indicator for task list
+                    child: CenteredCircularProgressIndicator(),
+                  ),
+                  child: _buildTaskListView(),
+                ),
               ),
             ],
           ),
@@ -64,99 +79,7 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
         child: const Icon(Icons.add),
       ),
     );
-  }*/
-/*  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
-    bool isLoading =
-        _getTaskCountByStatusInProgress || _getNewTaskListInProgress;
-
-    return Scaffold(
-      appBar: TMAppBar(
-        textTheme: textTheme,
-      ),
-      body: Stack(
-        children: [
-          ScreenBackground(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  _buildTasksSummaryByStatus(),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: _buildTaskListView(),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          if (isLoading)
-            const Center(
-              child: CircularProgressIndicator(),
-            ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, AddNewTaskScreen.name);
-        },
-        child: const Icon(Icons.add),
-      ),
-    );
-  }*/
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
-    // Unified loading state
-    bool isLoading = _getTaskCountByStatusInProgress || _getNewTaskListInProgress;
-
-    return Scaffold(
-      appBar: TMAppBar(
-        textTheme: textTheme,
-      ),
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              if (_getTaskCountByStatusInProgress || _getNewTaskListInProgress)
-                const LinearProgressIndicator(),
-              Expanded(
-                child: ScreenBackground(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        _buildTasksSummaryByStatus(),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: _buildTaskListView(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          if (isLoading)
-            const Center(
-              child: CircularProgressIndicator(),
-            ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, AddNewTaskScreen.name);
-        },
-        child: const Icon(Icons.add),
-      ),
-    );
   }
-
-
-
-
 
   Widget _buildTaskListView() {
     return ListView.builder(
