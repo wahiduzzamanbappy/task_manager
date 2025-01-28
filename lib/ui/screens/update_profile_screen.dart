@@ -32,11 +32,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
   @override
   void initState() {
+    super.initState();
     _emailTEController.text = AuthController.userModel?.email ?? '';
     _firstNameTEController.text = AuthController.userModel?.firstName ?? '';
     _lastNameTEController.text = AuthController.userModel?.lastName ?? '';
     _mobileTEController.text = AuthController.userModel?.mobile ?? '';
-    super.initState();
   }
 
   @override
@@ -196,7 +196,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     }
   }
 
-/*  Future<void> _updateProfile() async {
+  Future<void> _updateProfile() async {
     _updateProfileInProgress = true;
     setState(() {});
     Map<String, dynamic> requestBody = {
@@ -218,46 +218,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         url: Urls.updateProfile, body: requestBody);
     _updateProfileInProgress = false;
     setState(() {});
-    if (response.isSuccess) {
-      _passwordTEController.clear();
-    } else {
-      showSnackBarMessage(context, response.errorMessage);
-    }
-  }*/
-  Future<void> _updateProfile() async {
-    _updateProfileInProgress = true;
-    setState(() {});
-
-    Map<String, dynamic> requestBody = {
-      "email": _emailTEController.text.trim().isEmpty
-          ? ''
-          : _emailTEController.text.trim(),
-      "firstName": _firstNameTEController.text.trim().isEmpty
-          ? ''
-          : _firstNameTEController.text.trim(),
-      "lastName": _lastNameTEController.text.trim().isEmpty
-          ? ''
-          : _lastNameTEController.text.trim(),
-      "mobile": _mobileTEController.text.trim().isEmpty
-          ? ''
-          : _mobileTEController.text.trim(),
-    };
-
-    if (_pickedImage != null) {
-      List<int> imageBytes = await _pickedImage!.readAsBytes();
-      requestBody['photo'] = base64Encode(imageBytes);
-    }
-
-    if (_passwordTEController.text.isNotEmpty) {
-      requestBody['password'] = _passwordTEController.text.trim();
-    }
-
-    final NetworkResponse response = await NetworkCaller.postRequest(
-        url: Urls.updateProfile, body: requestBody);
-
-    _updateProfileInProgress = false;
-    setState(() {});
-
     if (response.isSuccess) {
       _passwordTEController.clear();
     } else {
