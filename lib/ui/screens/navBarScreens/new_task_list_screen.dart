@@ -62,7 +62,6 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
                   visible: !_getNewTaskListInProgress,
                   replacement: const Padding(
                     padding: EdgeInsets.only(top: 280),
-                    // Center progress indicator for task list
                     child: CenteredCircularProgressIndicator(),
                   ),
                   child: _buildTaskListView(),

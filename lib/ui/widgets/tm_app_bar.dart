@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:task_manager/ui/utils/app_color.dart';
+import 'package:task_manager/ui/widgets/snack_bar_message.dart';
 import '../controllers/auth_controller.dart';
 import '../screens/sign_in_screen.dart';
 import '../screens/update_profile_screen.dart';
@@ -23,10 +24,14 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
         children: [
           CircleAvatar(
             radius: 16,
-            backgroundImage: MemoryImage(
-              base64Decode(AuthController.userModel?.photo ?? ''),
-            ),
-            onBackgroundImageError: (_, __) => const Icon(Icons.person_outline),
+            backgroundImage: AuthController.userModel?.photo != null &&
+                AuthController.userModel!.photo!.isNotEmpty
+                ? MemoryImage(base64Decode(AuthController.userModel!.photo!))
+                : null,
+            child: AuthController.userModel?.photo == null ||
+                AuthController.userModel!.photo!.isEmpty
+                ? const Icon(Icons.person, color: Colors.white)
+                : null,
           ),
           const SizedBox(width: 8),
           Expanded(
@@ -64,6 +69,7 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
     );
   }
+
   void _logOutFromTaskListScreen(BuildContext context) {
     showDialog(
         context: context,
@@ -74,12 +80,13 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
             actions: [
               TextButton(
                 onPressed: () async {
-            await AuthController.clearUserData();
-            Navigator.pushNamedAndRemoveUntil(
-                context, SignInScreen.name, (predicate) => false);
-          },
+                  await AuthController.clearUserData();
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, SignInScreen.name, (predicate) => false);
+                  showSnackBarMessage(context, 'Logged Out successfully');
+                },
                 child: Text(
-                  'LogOut',
+                  'Yes',
                   style: TextStyle(color: Colors.red),
                 ),
               ),
@@ -88,7 +95,7 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
                   Navigator.pop(context);
                 },
                 child: Text(
-                  'Cancel',
+                  'No',
                   style: TextStyle(color: Colors.green),
                 ),
               ),

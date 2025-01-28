@@ -52,7 +52,7 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
                   children: [
                     IconButton(
                       onPressed: () {
-                        _updateTaskListItem(widget.taskModel.sId.toString(),
+                        _updateTaskStatus(widget.taskModel.sId.toString(),
                             widget.taskModel.status.toString());
                       },
                       icon: Icon(
@@ -94,7 +94,7 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
                   setState(() {});
                 },
                 child: Text(
-                  'Confirm',
+                  'Yes',
                   style: TextStyle(color: Colors.red),
                 ),
               ),
@@ -103,7 +103,7 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
                   Navigator.pop(context);
                 },
                 child: Text(
-                  'Cancel',
+                  'No',
                   style: TextStyle(color: Colors.green),
                 ),
               ),
@@ -112,7 +112,7 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
         });
   }
 
-  void _updateTaskListItem(String id, String status) {
+  void _updateTaskStatus(String id, String status) {
     showDialog(
       context: context,
       builder: (context) {
@@ -128,7 +128,7 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
                 title: const Text('New', style: TextStyle(color: Colors.blue)),
                 onTap: () {
                   widget.taskModel.status = 'New';
-                  _updateTaskItem(id, 'New');
+                  _updateTaskItem(id, status);
                   Navigator.pop(context);
                 },
               ),
@@ -138,7 +138,7 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
                     style: TextStyle(color: Colors.deepPurpleAccent)),
                 onTap: () {
                   widget.taskModel.status = 'Progress';
-                  _updateTaskItem(id, 'New');
+                  _updateTaskItem(id, status);
                   Navigator.pop(context);
                 },
               ),
@@ -147,7 +147,7 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
                 title: Text('Completed', style: TextStyle(color: Colors.green)),
                 onTap: () {
                   widget.taskModel.status = 'Completed';
-                  _updateTaskItem(id, 'New');
+                  _updateTaskItem(id, status);
                   Navigator.pop(context);
                 },
               ),
@@ -156,7 +156,7 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
                 title: Text('Cancelled', style: TextStyle(color: Colors.red)),
                 onTap: () {
                   widget.taskModel.status = 'Cancelled';
-                  _updateTaskItem(id, 'New');
+                  _updateTaskItem(id, status);
                   Navigator.pop(context);
                 },
               ),

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:task_manager/data/service/network_caller.dart';
@@ -8,7 +7,6 @@ import 'package:task_manager/ui/widgets/centered_circle_indicator.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 import 'package:task_manager/ui/widgets/snack_bar_message.dart';
 import 'package:task_manager/ui/widgets/tm_app_bar.dart';
-
 import '../../data/utils/urls.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
@@ -154,10 +152,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
               height: 50,
               padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: const BoxDecoration(
-                  color: Colors.grey,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(8),
-                      bottomLeft: Radius.circular(8))),
+                color: Colors.grey,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8),
+                  bottomLeft: Radius.circular(8),
+                ),
+              ),
               alignment: Alignment.center,
               child: const Text(
                 'Photo',
@@ -167,14 +167,24 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
               ),
             ),
             const SizedBox(width: 12),
-            Text(
-              _pickedImage == null ? 'No item selected' : _pickedImage!.name,
-              maxLines: 1,
-            )
+            Expanded(
+              child: Text(
+                _pickedImage == null ? 'No item selected' : _pickedImage!.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(color: Colors.black),
+              ),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  void _onTapUpdateButton() {
+    if (_formKey.currentState!.validate()) {
+      _updateProfile();
+    }
   }
 
   Future<void> _pickImage() async {
@@ -186,13 +196,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     }
   }
 
-  void _onTapUpdateButton() {
-    if (_formKey.currentState!.validate()) {
-      _updateProfile();
-    }
-  }
-
-  Future<void> _updateProfile() async {
+/*  Future<void> _updateProfile() async {
     _updateProfileInProgress = true;
     setState(() {});
     Map<String, dynamic> requestBody = {
@@ -211,9 +215,49 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     }
 
     final NetworkResponse response = await NetworkCaller.postRequest(
-        url: Urls.updateProfileUrl, body: requestBody);
+        url: Urls.updateProfile, body: requestBody);
     _updateProfileInProgress = false;
     setState(() {});
+    if (response.isSuccess) {
+      _passwordTEController.clear();
+    } else {
+      showSnackBarMessage(context, response.errorMessage);
+    }
+  }*/
+  Future<void> _updateProfile() async {
+    _updateProfileInProgress = true;
+    setState(() {});
+
+    Map<String, dynamic> requestBody = {
+      "email": _emailTEController.text.trim().isEmpty
+          ? ''
+          : _emailTEController.text.trim(),
+      "firstName": _firstNameTEController.text.trim().isEmpty
+          ? ''
+          : _firstNameTEController.text.trim(),
+      "lastName": _lastNameTEController.text.trim().isEmpty
+          ? ''
+          : _lastNameTEController.text.trim(),
+      "mobile": _mobileTEController.text.trim().isEmpty
+          ? ''
+          : _mobileTEController.text.trim(),
+    };
+
+    if (_pickedImage != null) {
+      List<int> imageBytes = await _pickedImage!.readAsBytes();
+      requestBody['photo'] = base64Encode(imageBytes);
+    }
+
+    if (_passwordTEController.text.isNotEmpty) {
+      requestBody['password'] = _passwordTEController.text.trim();
+    }
+
+    final NetworkResponse response = await NetworkCaller.postRequest(
+        url: Urls.updateProfile, body: requestBody);
+
+    _updateProfileInProgress = false;
+    setState(() {});
+
     if (response.isSuccess) {
       _passwordTEController.clear();
     } else {

@@ -35,9 +35,9 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
           NavigationDestination(
               icon: Icon(Icons.new_label_outlined), label: 'New Task'),
           NavigationDestination(
-              icon: Icon(Icons.refresh), label: 'Progress'),
+              icon: Icon(Icons.refresh_outlined), label: 'Progress'),
           NavigationDestination(
-              icon: Icon(Icons.done), label: 'Completed'),
+              icon: Icon(Icons.done_all_rounded), label: 'Completed'),
           NavigationDestination(
               icon: Icon(Icons.cancel_outlined), label: 'Cancelled'),
         ],

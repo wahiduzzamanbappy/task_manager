@@ -141,7 +141,7 @@ class _ForgotPasswordVerifyOtpScreenState
           widget.email.toString(), _otpTEController.text),
     );
 
-    if (response.isSuccess) {
+    if (response.responseData!['status']== 'success') {
       Navigator.push(
           context,
           MaterialPageRoute(
