@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:task_manager/data/models/task_model.dart';
 import '../../data/service/network_caller.dart';
@@ -39,7 +40,7 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
               children: [
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   child: Chip(
                     label: Text(
                       widget.text,
@@ -171,7 +172,7 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
     _deleteTaskInProgress = true;
     setState(() {});
     final NetworkResponse response =
-        await NetworkCaller.getRequest(url: Urls.deleteTaskUrl(id));
+    await NetworkCaller.getRequest(url: Urls.deleteTaskUrl(id));
     _deleteTaskInProgress = false;
 
     setState(() {});

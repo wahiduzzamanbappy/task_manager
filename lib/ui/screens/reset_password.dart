@@ -63,7 +63,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   const SizedBox(height: 4),
                   Text('Minimum length of password should be 8 letters.'),
                   const SizedBox(height: 24),
-                  // New Password TextField
                   TextFormField(
                     controller: _newPasswordTEController,
                     obscureText: _obscureText,
@@ -90,7 +89,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     },
                   ),
                   const SizedBox(height: 24),
-                  // Confirm Password TextField
                   TextFormField(
                     controller: _confirmNewPasswordTEController,
                     obscureText: _obscureTextOne,
