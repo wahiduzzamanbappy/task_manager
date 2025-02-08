@@ -1,10 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:task_manager/data/service/network_caller.dart';
-import 'package:task_manager/data/utils/urls.dart';
+import 'package:get/get.dart';
+import 'package:task_manager/ui/screens/sign_in_screen.dart';
 import 'package:task_manager/ui/utils/app_color.dart';
 import 'package:task_manager/ui/widgets/centered_circle_indicator.dart';
-
+import '../controllers/sign_up_controller.dart';
 import '../widgets/snack_bar_message.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -23,7 +23,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _mobileTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _signUpInProgress = false;
+  final SignUpController _signUpController = Get.put(SignUpController());
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +90,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     return null;
                   },
                 ),
-
                 const SizedBox(height: 8),
                 TextFormField(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -105,16 +104,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   },
                 ),
                 const SizedBox(height: 24),
-                Visibility(
-                  visible: _signUpInProgress == false,
-                  replacement: CenteredCircularProgressIndicator(),
-                  child: ElevatedButton(
-                    onPressed: _onTapSignUpButton,
-                    child: Icon(
-                      Icons.arrow_circle_right_outlined,
-                      color: Colors.white,
-                    ),
-                  ),
+                GetBuilder<SignUpController>(
+                  builder: (controller) {
+                    return Visibility(
+                      visible: controller.inProgress == false,
+                      replacement: CenteredCircularProgressIndicator(),
+                      child: ElevatedButton(
+                        onPressed: _onTapSignUpButton,
+                        child: Icon(
+                          Icons.arrow_circle_right_outlined,
+                          color: Colors.white,
+                        ),
+                      ),
+                    );
+                  }
                 ),
                 const SizedBox(height: 48),
                 Center(
@@ -139,26 +142,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<void> _registerUser() async {
-    _signUpInProgress = true;
-    setState(() {});
-    Map<String, dynamic> requestBody = {
-      "email": _emailTEController.text.trim(),
-      "firstName": _firstNameTEController.text.trim(),
-      "lastName": _lastNameTEController.text.trim(),
-      "mobile": _mobileTEController.text.trim(),
-      "password": _passwordTEController.text,
-      "photo": ""
-    };
+    bool isSuccess = await _signUpController.signUp(
+        _emailTEController.text.trim(),
+        _passwordTEController.text,
+        _firstNameTEController.text,
+        _lastNameTEController.text,
+        _mobileTEController.text.trim());
 
-    final NetworkResponse response = await NetworkCaller.postRequest(
-        url: Urls.registrationUrl, body: requestBody);
-    _signUpInProgress = false;
-    setState(() {});
-    if (response.isSuccess) {
+    if (isSuccess) {
       _clearTextFields();
+     Get.toNamed(SignInScreen.name);
       showSnackBarMessage(context, 'New user registration successful!');
     } else {
-      showSnackBarMessage(context, response.errorMessage);
+      showSnackBarMessage(context, _signUpController.errorMessage!);
     }
   }
 
@@ -181,7 +177,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             style: TextStyle(color: AppColors.themeColor),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                Navigator.pop(context);
+                Get.back();
               },
           ),
         ],

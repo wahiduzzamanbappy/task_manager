@@ -1,14 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:task_manager/data/service/network_caller.dart';
+import 'package:get/get.dart';
+import 'package:task_manager/ui/controllers/verify_email_controller.dart';
 import 'package:task_manager/ui/screens/forgot_password_verify_otp_screen.dart';
-import 'package:task_manager/ui/screens/sign_up_screen.dart';
 import 'package:task_manager/ui/utils/app_color.dart';
 import 'package:task_manager/ui/widgets/centered_circle_indicator.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 import 'package:task_manager/ui/widgets/snack_bar_message.dart';
-
-import '../../data/utils/urls.dart';
 
 class ForgotPasswordVerifyEmailScreen extends StatefulWidget {
   const ForgotPasswordVerifyEmailScreen({super.key});
@@ -24,7 +22,8 @@ class _ForgotPasswordVerifyEmailScreenState
     extends State<ForgotPasswordVerifyEmailScreen> {
   final TextEditingController _emailTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _verifyEmailInProgress = false;
+  final VerifyEmailController _verifyEmailController =
+      Get.find<VerifyEmailController>();
 
   @override
   Widget build(BuildContext context) {
@@ -59,19 +58,21 @@ class _ForgotPasswordVerifyEmailScreenState
                     },
                   ),
                   const SizedBox(height: 24),
-                  Visibility(
-                    visible: !_verifyEmailInProgress,
-                    replacement: const CenteredCircularProgressIndicator(),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        _onTapVerifyEmailButton(context);
-                      },
-                      child: const Icon(
-                        Icons.arrow_circle_right_outlined,
-                        color: Colors.white,
+                  GetBuilder<VerifyEmailController>(builder: (controller) {
+                    return Visibility(
+                      visible: controller.inProgress == false,
+                      replacement: const CenteredCircularProgressIndicator(),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          _onTapVerifyEmailButton(context);
+                        },
+                        child: const Icon(
+                          Icons.arrow_circle_right_outlined,
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                  ),
+                    );
+                  }),
                   const SizedBox(height: 48),
                   Center(
                     child: Column(
@@ -101,7 +102,7 @@ class _ForgotPasswordVerifyEmailScreenState
             style: const TextStyle(color: AppColors.themeColor),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                Navigator.pop(context);
+                Get.back();
               },
           ),
         ],
@@ -116,28 +117,15 @@ class _ForgotPasswordVerifyEmailScreenState
   }
 
   Future<void> _recoveryVerifyEmail(BuildContext context) async {
-    setState(() {
-      _verifyEmailInProgress = true;
-    });
+    final bool isSuccess = await _verifyEmailController
+        .verifyEmail(_emailTEController.text.trim());
 
-    final NetworkResponse response = await NetworkCaller.getRequest(
-      url: Urls.recoverVerifyEmailUrl(_emailTEController.text),
-    );
-
-    if (response.isSuccess) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              ForgotPasswordVerifyOtpScreen(email: _emailTEController.text),
-        ),
-      );
+    if (isSuccess) {
+     Get.offNamed(ForgotPasswordVerifyOtpScreen.name,
+          arguments: _emailTEController.text.trim());
     } else {
       showSnackBarMessage(context, 'Something went wrong. Try again!');
     }
-    setState(() {
-      _verifyEmailInProgress = false;
-    });
   }
 
   @override

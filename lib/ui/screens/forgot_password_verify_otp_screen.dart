@@ -1,7 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:task_manager/data/service/network_caller.dart';
+import 'package:task_manager/ui/controllers/verify_otp_controller.dart';
 import 'package:task_manager/ui/screens/reset_password.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
 import 'package:task_manager/ui/utils/app_color.dart';
@@ -25,11 +28,14 @@ class _ForgotPasswordVerifyOtpScreenState
     extends State<ForgotPasswordVerifyOtpScreen> {
   final TextEditingController _otpTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _verifyOtpInProgress = false;
+  final VerifyOTPController _verifyOTPController = Get.find
+  <VerifyOTPController>();
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    final textTheme = Theme
+        .of(context)
+        .textTheme;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -51,15 +57,19 @@ class _ForgotPasswordVerifyOtpScreenState
                   const SizedBox(height: 24),
                   _buildPinCodeTextField(context),
                   const SizedBox(height: 24),
-                  Visibility(
-                    visible: _verifyOtpInProgress == false,
-                    replacement: const CenteredCircularProgressIndicator(),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        _onTapOTPButton(context);
-                      },
-                      child: const Text('Verify'),
-                    ),
+                  GetBuilder<VerifyOTPController>(
+                      builder: (controller) {
+                        return Visibility(
+                          visible: controller.inProgress == false,
+                          replacement: const CenteredCircularProgressIndicator(),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _onTapOTPButton(context);
+                            },
+                            child: const Text('Verify'),
+                          ),
+                        );
+                      }
                   ),
                   const SizedBox(height: 48),
                   Center(
@@ -105,17 +115,15 @@ class _ForgotPasswordVerifyOtpScreenState
       text: TextSpan(
         text: "Have an account?",
         style:
-            const TextStyle(color: Colors.black45, fontWeight: FontWeight.w600),
+        const TextStyle(color: Colors.black45, fontWeight: FontWeight.w600),
         children: [
           TextSpan(
             text: ' Sign In',
             style: const TextStyle(color: AppColors.themeColor),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  SignInScreen.name,
-                  (predicate) => false,
+                Get.offAllNamed(
+                    SignInScreen.name
                 );
               },
           ),
@@ -133,26 +141,22 @@ class _ForgotPasswordVerifyOtpScreenState
   }
 
   Future<void> _recoveryVerifyOtp(BuildContext context) async {
-    _verifyOtpInProgress = true;
-    setState(() {});
+    final bool isSuccess = await _verifyOTPController.verifyOTP(
+        widget.email.toString(), _otpTEController.text);
 
-    final NetworkResponse response = await NetworkCaller.getRequest(
-      url: Urls.recoverVerifyOtpUrl(
-          widget.email.toString(), _otpTEController.text),
-    );
-
-    if (response.responseData!['status']== 'success') {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ResetPasswordScreen(
-                  email: widget.email, otp: _otpTEController.text)));
+    if (isSuccess) {
+      Get.to(
+        ResetPasswordScreen.name,
+        arguments: {
+          'email': widget.email.toString(),
+          'otp': _otpTEController.text
+        },
+      );
     } else {
       showSnackBarMessage(context, 'OTP is incorrect. Try again!');
     }
-    _verifyOtpInProgress = false;
-    setState(() {});
   }
+
 
   @override
   void dispose() {

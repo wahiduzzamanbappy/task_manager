@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/data/models/task_list_by_status_model.dart';
-import 'package:task_manager/data/service/network_caller.dart';
-import 'package:task_manager/data/utils/urls.dart';
+import 'package:get/get.dart';
+import 'package:task_manager/ui/controllers/Cancelled_taskList_controller.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
-import 'package:task_manager/ui/widgets/snack_bar_message.dart';
 import 'package:task_manager/ui/widgets/task_item_widget.dart';
 import 'package:task_manager/ui/widgets/tm_app_bar.dart';
+import '../../../data/models/task_model.dart';
 
 class NavbarCancelledTaskListScreen extends StatefulWidget {
   const NavbarCancelledTaskListScreen({super.key});
@@ -17,13 +16,12 @@ class NavbarCancelledTaskListScreen extends StatefulWidget {
 
 class _NavbarCancelledTaskListScreenState
     extends State<NavbarCancelledTaskListScreen> {
-  TaskListByStatusModel? cancelledTaskListModel;
-  bool _getCancelledTaskListInProgress = false;
+final CancelledTaskListController _cancelledTaskListController = Get.find<CancelledTaskListController>();
 
   @override
   void initState() {
     super.initState();
-    _getCancelledTaskList();
+    _cancelledTaskListController.getCancelledTaskList();
   }
 
   @override
@@ -35,10 +33,18 @@ class _NavbarCancelledTaskListScreenState
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                _buildTaskListView(),
-              ],
+            child: GetBuilder<CancelledTaskListController>(
+              builder: (controller) {
+                if (controller.inProgress) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (controller.cancelledTasks.isEmpty) {
+                  return const Center(child: Text("No completed tasks found."));
+                }
+
+                return _buildTaskListView(controller.cancelledTasks);
+              },
             ),
           ),
         ),
@@ -46,30 +52,17 @@ class _NavbarCancelledTaskListScreenState
     );
   }
 
-  Widget _buildTaskListView() {
+  Widget _buildTaskListView(List<TaskModel> cancelledTask) {
     return ListView.builder(
-      shrinkWrap: true,
-      primary: false,
-      itemCount: cancelledTaskListModel?.data?.length ?? 0,
-      itemBuilder: (context, index) => TaskItemWidget(
-        text: 'Cancelled',
-        color: Colors.redAccent,
-        taskModel: cancelledTaskListModel!.data![index],
+        shrinkWrap: true,
+        primary: false,
+        itemCount: cancelledTask.length,
+        itemBuilder: (context, index) => TaskItemWidget(
+          text: 'Cancelled',
+          color: Colors.red,
+          taskModel: cancelledTask[index],
       ),
     );
   }
 
-  Future<void> _getCancelledTaskList() async {
-    _getCancelledTaskListInProgress = true;
-    final NetworkResponse response = await NetworkCaller.getRequest(
-        url: Urls.taskListByStatusUrl('Cancelled'));
-    if (response.isSuccess) {
-      cancelledTaskListModel =
-          TaskListByStatusModel.fromJson(response.responseData!);
-    } else {
-      showSnackBarMessage(context, response.errorMessage);
-    }
-    _getCancelledTaskListInProgress = false;
-    setState(() {});
-  }
 }
