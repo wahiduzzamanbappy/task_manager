@@ -30,14 +30,15 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final UpdateProfileController _updateProfileController =
       Get.put(UpdateProfileController());
   XFile? _pickedImage;
+  final AuthController authController = Get.find<AuthController>();
 
   @override
   void initState() {
     super.initState();
-    _emailTEController.text = AuthController.userModel?.email ?? '';
-    _firstNameTEController.text = AuthController.userModel?.firstName ?? '';
-    _lastNameTEController.text = AuthController.userModel?.lastName ?? '';
-    _mobileTEController.text = AuthController.userModel?.mobile ?? '';
+    _emailTEController.text = authController.userModel?.email ?? '';
+    _firstNameTEController.text = authController.userModel?.firstName ?? '';
+    _lastNameTEController.text = authController.userModel?.lastName ?? '';
+    _mobileTEController.text = authController.userModel?.mobile ?? '';
   }
 
   @override
@@ -225,3 +226,4 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     super.dispose();
   }
 }
+
