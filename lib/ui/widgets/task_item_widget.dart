@@ -1,8 +1,9 @@
-
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:task_manager/data/models/task_model.dart';
-import '../../data/service/network_caller.dart';
-import '../../data/utils/urls.dart';
+import 'package:task_manager/ui/controllers/delete_taskList_item_controller.dart';
+import 'package:task_manager/ui/controllers/update_task_status_controller.dart';
+import 'package:task_manager/ui/widgets/snack_bar_message.dart';
 
 class TaskItemWidget extends StatefulWidget {
   const TaskItemWidget({
@@ -21,7 +22,10 @@ class TaskItemWidget extends StatefulWidget {
 }
 
 class _TaskItemWidgetState extends State<TaskItemWidget> {
-  bool _deleteTaskInProgress = false;
+  final DeleteTaskListItemController _deleteTaskListItemController =
+      Get.find<DeleteTaskListItemController>();
+  final UpdateTaskStatusController _updateTaskStatusController =
+      Get.find<UpdateTaskStatusController>();
 
   @override
   Widget build(BuildContext context) {
@@ -40,11 +44,11 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
               children: [
                 Padding(
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   child: Chip(
                     label: Text(
                       widget.text,
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                     ),
                     backgroundColor: widget.color,
                   ),
@@ -53,19 +57,21 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
                   children: [
                     IconButton(
                       onPressed: () {
-                        _updateTaskStatus(widget.taskModel.sId.toString(),
-                            widget.taskModel.status.toString());
+                        _updateTaskStatus(
+                            widget.taskModel.sId?.toString() ?? '',
+                            widget.taskModel.status ?? '');
                       },
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.edit_outlined,
                         color: Colors.amber,
                       ),
                     ),
                     IconButton(
                       onPressed: () {
-                        _deleteTaskListItem(widget.taskModel.sId.toString());
+                        _deleteTaskListItem(
+                            widget.taskModel.sId?.toString() ?? '');
                       },
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.delete_outline,
                         color: Colors.redAccent,
                       ),
@@ -85,25 +91,24 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Delete Task'),
-            content: Text('Are you sure?'),
+            title: const Text('Delete Task'),
+            content: const Text('Are you sure?'),
             actions: [
               TextButton(
                 onPressed: () async {
                   await _deleteTaskItem(id);
-                  Navigator.pop(context);
-                  setState(() {});
+                  Get.back();
                 },
-                child: Text(
+                child: const Text(
                   'Yes',
                   style: TextStyle(color: Colors.red),
                 ),
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  Get.back();
                 },
-                child: Text(
+                child: const Text(
                   'No',
                   style: TextStyle(color: Colors.green),
                 ),
@@ -129,8 +134,8 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
                 title: const Text('New', style: TextStyle(color: Colors.blue)),
                 onTap: () {
                   widget.taskModel.status = 'New';
-                  _updateTaskItem(id, status);
-                  Navigator.pop(context);
+                  _updateTaskItem(id, 'New');
+                  Get.back();
                 },
               ),
               const Divider(height: 0),
@@ -139,26 +144,28 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
                     style: TextStyle(color: Colors.deepPurpleAccent)),
                 onTap: () {
                   widget.taskModel.status = 'Progress';
-                  _updateTaskItem(id, status);
-                  Navigator.pop(context);
+                  _updateTaskItem(id, 'Progress');
+                  Get.back();
                 },
               ),
               const Divider(height: 0),
               ListTile(
-                title: Text('Completed', style: TextStyle(color: Colors.green)),
+                title: const Text('Completed',
+                    style: TextStyle(color: Colors.green)),
                 onTap: () {
                   widget.taskModel.status = 'Completed';
-                  _updateTaskItem(id, status);
-                  Navigator.pop(context);
+                  _updateTaskItem(id, 'Completed');
+                  Get.back();
                 },
               ),
               const Divider(height: 0),
               ListTile(
-                title: Text('Cancelled', style: TextStyle(color: Colors.red)),
+                title: const Text('Cancelled',
+                    style: TextStyle(color: Colors.red)),
                 onTap: () {
                   widget.taskModel.status = 'Cancelled';
-                  _updateTaskItem(id, status);
-                  Navigator.pop(context);
+                  _updateTaskItem(id, 'Cancelled');
+                  Get.back();
                 },
               ),
             ],
@@ -169,50 +176,19 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
   }
 
   Future<void> _deleteTaskItem(String id) async {
-    _deleteTaskInProgress = true;
-    setState(() {});
-    final NetworkResponse response =
-    await NetworkCaller.getRequest(url: Urls.deleteTaskUrl(id));
-    _deleteTaskInProgress = false;
-
-    setState(() {});
-    if (response.isSuccess) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Task Deleted successfully!'),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to delete! Try again.'),
-        ),
-      );
+    final bool isSuccess =
+        await _deleteTaskListItemController.deleteTaskListItem(id);
+    if (!isSuccess) {
+      showSnackBarMessage(context, _deleteTaskListItemController.errorMessage!);
     }
   }
 
   Future<void> _updateTaskItem(String id, String status) async {
-    _deleteTaskInProgress = true;
-    setState(() {});
-    final NetworkResponse response = await NetworkCaller.getRequest(
-        url: Urls.updateStatusUrl(widget.taskModel.sId.toString(),
-            widget.taskModel.status.toString()));
+    final bool isSuccess =
+        await _updateTaskStatusController.updateTaskStatus(id, status);
 
-    setState(() {});
-    if (response.isSuccess) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Task Status updated successfully!'),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to update! Try again.'),
-        ),
-      );
+    if (!isSuccess) {
+      showSnackBarMessage(context, _updateTaskStatusController.errorMessage!);
     }
-    _deleteTaskInProgress = false;
-    setState(() {});
   }
 }

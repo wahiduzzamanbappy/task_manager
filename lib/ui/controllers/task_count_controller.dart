@@ -15,7 +15,8 @@ class TaskCountByStatusController extends GetxController {
 
   TaskCountByStatusModel? _taskCountByStatusModel;
 
-  List<TaskCountModel> get taskCount => _taskCountByStatusModel?.taskByStatusList ?? [];
+  List<TaskCountModel> get taskCount =>
+      _taskCountByStatusModel?.taskByStatusList ?? [];
 
   Future<bool> getTaskCount() async {
     bool isSuccess = false;
@@ -35,5 +36,3 @@ class TaskCountByStatusController extends GetxController {
     return isSuccess;
   }
 }
-
-

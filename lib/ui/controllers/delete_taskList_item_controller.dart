@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:task_manager/data/utils/urls.dart';
 import '../../data/service/network_caller.dart';
 
-class VerifyEmailController extends GetxController {
+class DeleteTaskListItemController extends GetxController {
   bool _inProgress = false;
 
   bool get inProgress => _inProgress;
@@ -11,18 +11,19 @@ class VerifyEmailController extends GetxController {
 
   String? get errorMessage => _errorMessage;
 
-  Future<bool> verifyEmail(String email) async {
+  Future<bool> deleteTaskListItem(String id) async {
     bool isSuccess = false;
     _inProgress = true;
     update();
+
     final NetworkResponse response =
-        await NetworkCaller.getRequest(url: Urls.recoverVerifyEmailUrl(email));
+        await NetworkCaller.getRequest(url: Urls.deleteTaskUrl(id));
+
     if (response.isSuccess) {
+      _errorMessage = 'Task Deleted successfully!';
       isSuccess = true;
-      _errorMessage = 'A 6 digit OTP sent to your email.';
-    } else {
-      _errorMessage = response.errorMessage;
     }
+
     _inProgress = false;
     update();
     return isSuccess;

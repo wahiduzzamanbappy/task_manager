@@ -6,7 +6,6 @@ import 'package:task_manager/ui/widgets/centered_circle_indicator.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 import 'package:task_manager/ui/widgets/snack_bar_message.dart';
 import 'package:task_manager/ui/widgets/tm_app_bar.dart';
-
 import '../controllers/update_profile_controller.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
@@ -226,4 +225,3 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     super.dispose();
   }
 }
-

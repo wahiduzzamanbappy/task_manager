@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 class TaskStatusSummaryCountWidget extends StatelessWidget {
   const TaskStatusSummaryCountWidget({
     super.key,
-    required this.textTheme, required this.title, required this.count,
+    required this.textTheme,
+    required this.title,
+    required this.count,
   });
+
   final String title;
   final String count;
 
@@ -19,8 +22,14 @@ class TaskStatusSummaryCountWidget extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
         child: Column(
           children: [
-            Text(count, style: textTheme.titleLarge,),
-            Text(title, style: textTheme.titleSmall,),
+            Text(
+              count,
+              style: textTheme.titleLarge,
+            ),
+            Text(
+              title,
+              style: textTheme.titleSmall,
+            ),
           ],
         ),
       ),

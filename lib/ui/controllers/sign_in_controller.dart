@@ -23,7 +23,7 @@ class SignInController extends GetxController {
       "password": password,
     };
     final NetworkResponse response =
-    await NetworkCaller.postRequest(url: Urls.logInUrl, body: requestBody);
+        await NetworkCaller.postRequest(url: Urls.logInUrl, body: requestBody);
     if (response.isSuccess) {
       String token = response.responseData!['token'];
       UserModel userModel = UserModel.fromJson(response.responseData!['data']);

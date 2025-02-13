@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:task_manager/data/models/task_count_by_status_model.dart';
 import 'package:task_manager/data/models/task_count_model.dart';
 import 'package:task_manager/data/models/task_model.dart';
 import 'package:task_manager/ui/controllers/new_taskList_controller.dart';
@@ -21,66 +20,60 @@ class NewTaskListScreen extends StatefulWidget {
 }
 
 class _NewTaskListScreenState extends State<NewTaskListScreen> {
-  final NewTaskListController _newTaskListController = Get.find<
-      NewTaskListController>();
-  final TaskCountByStatusController _taskCountByStatusController = Get.find<
-      TaskCountByStatusController>();
-
+  final NewTaskListController _newTaskListController =
+      Get.find<NewTaskListController>();
+  final TaskCountByStatusController _taskCountByStatusController =
+      Get.find<TaskCountByStatusController>();
 
   @override
   void initState() {
     super.initState();
-    _getTaskCountByStatus();
-    _getNewTaskList();
-
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getTaskCountByStatus();
+      _getNewTaskList();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme
-        .of(context)
-        .textTheme;
+    final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
       appBar: TMAppBar(
         textTheme: textTheme,
+        fromUpdateProfile: true,
       ),
       body: ScreenBackground(
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Builder(
-                  builder: (context) {
-                    return GetBuilder<TaskCountByStatusController>(
-                        builder: (controller) {
-                          return Visibility(
-                            visible: controller.inProgress == false,
-                            replacement: const Padding(
-                              padding: EdgeInsets.only(top: 10.0),
-                              child: Center(
-                                child: LinearProgressIndicator(),
-                              ),
-                            ),
-                            child: _buildTasksSummaryByStatus(controller.taskCount),
-                          );
-                        }
-                    );
-                  }
-              ),
+              Builder(builder: (context) {
+                return GetBuilder<TaskCountByStatusController>(
+                    builder: (controller) {
+                  return Visibility(
+                    visible: controller.inProgress == false,
+                    replacement: const Padding(
+                      padding: EdgeInsets.only(top: 10.0),
+                      child: Center(
+                        child: LinearProgressIndicator(),
+                      ),
+                    ),
+                    child: _buildTasksSummaryByStatus(controller.taskCount),
+                  );
+                });
+              }),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: GetBuilder<NewTaskListController>(
-                    builder: (controller) {
-                      return Visibility(
-                        visible: controller.inProgress == false,
-                        replacement: const Padding(
-                          padding: EdgeInsets.only(top: 280),
-                          child: CenteredCircularProgressIndicator(),
-                        ),
-                        child: _buildTaskListView(controller.taskList),
-                      );
-                    }
-                ),
+                child: GetBuilder<NewTaskListController>(builder: (controller) {
+                  return Visibility(
+                    visible: controller.inProgress == false,
+                    replacement: const Padding(
+                      padding: EdgeInsets.only(top: 220),
+                      child: CenteredCircularProgressIndicator(),
+                    ),
+                    child: _buildTaskListView(controller.taskList),
+                  );
+                }),
               ),
             ],
           ),
@@ -119,8 +112,7 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
           scrollDirection: Axis.horizontal,
           itemCount: taskCount.length,
           itemBuilder: (context, index) {
-            final TaskCountModel model =
-            taskCount[index];
+            final TaskCountModel model = taskCount[index];
             return TaskStatusSummaryCounterWidget(
               title: model.sId ?? '',
               count: model.sum.toString(),
@@ -138,10 +130,10 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
     }
   }
 
-    Future<void> _getNewTaskList() async {
-      final bool isSuccess = await _newTaskListController.getTaskList();
-      if (isSuccess) {
-        showSnackBarMessage(context, _newTaskListController.errorMessage!);
-      }
+  Future<void> _getNewTaskList() async {
+    final bool isSuccess = await _newTaskListController.getTaskList();
+    if (isSuccess) {
+      showSnackBarMessage(context, _newTaskListController.errorMessage!);
     }
   }
+}

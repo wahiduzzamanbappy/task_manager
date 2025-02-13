@@ -23,7 +23,7 @@ class _ForgotPasswordVerifyEmailScreenState
   final TextEditingController _emailTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final VerifyEmailController _verifyEmailController =
-      Get.find<VerifyEmailController>();
+      Get.put(VerifyEmailController());
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +121,7 @@ class _ForgotPasswordVerifyEmailScreenState
         .verifyEmail(_emailTEController.text.trim());
 
     if (isSuccess) {
-     Get.offNamed(ForgotPasswordVerifyOtpScreen.name,
+      Get.offNamed(ForgotPasswordVerifyOtpScreen.name,
           arguments: _emailTEController.text.trim());
     } else {
       showSnackBarMessage(context, 'Something went wrong. Try again!');
