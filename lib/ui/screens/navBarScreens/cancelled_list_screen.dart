@@ -16,7 +16,8 @@ class NavbarCancelledTaskListScreen extends StatefulWidget {
 
 class _NavbarCancelledTaskListScreenState
     extends State<NavbarCancelledTaskListScreen> {
-final CancelledTaskListController _cancelledTaskListController = Get.find<CancelledTaskListController>();
+  final CancelledTaskListController _cancelledTaskListController =
+      Get.find<CancelledTaskListController>();
 
   @override
   void initState() {
@@ -30,39 +31,36 @@ final CancelledTaskListController _cancelledTaskListController = Get.find<Cancel
     return Scaffold(
       appBar: TMAppBar(textTheme: textTheme),
       body: ScreenBackground(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: GetBuilder<CancelledTaskListController>(
-              builder: (controller) {
-                if (controller.inProgress) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: GetBuilder<CancelledTaskListController>(
+            builder: (controller) {
+              if (controller.inProgress) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-                if (controller.cancelledTasks.isEmpty) {
-                  return const Center(child: Text("No completed tasks found."));
-                }
+              if (controller.cancelledTasks.isEmpty) {
+                return const Center(child: Text("No tasks found."));
+              }
 
-                return _buildTaskListView(controller.cancelledTasks);
-              },
-            ),
+              return _buildTaskListView(controller.cancelledTasks);
+            },
           ),
         ),
       ),
     );
   }
 
-  Widget _buildTaskListView(List<TaskModel> cancelledTask) {
+  _buildTaskListView(List<TaskModel> cancelledTask) {
     return ListView.builder(
-        shrinkWrap: true,
-        primary: false,
-        itemCount: cancelledTask.length,
-        itemBuilder: (context, index) => TaskItemWidget(
-          text: 'Cancelled',
-          color: Colors.red,
-          taskModel: cancelledTask[index],
+      shrinkWrap: true,
+      primary: false,
+      itemCount: cancelledTask.length,
+      itemBuilder: (context, index) => TaskItemWidget(
+        text: 'Cancelled',
+        color: Colors.red,
+        taskModel: cancelledTask[index],
       ),
     );
   }
-
 }

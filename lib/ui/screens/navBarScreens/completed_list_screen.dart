@@ -17,7 +17,7 @@ class NavbarCompletedTaskListScreen extends StatefulWidget {
 class _NavbarCompletedTaskListScreenState
     extends State<NavbarCompletedTaskListScreen> {
   final CompletedTaskListController _completedTaskListController =
-  Get.find<CompletedTaskListController>();
+      Get.find<CompletedTaskListController>();
 
   @override
   void initState() {
@@ -40,7 +40,7 @@ class _NavbarCompletedTaskListScreenState
               }
 
               if (controller.completedTasks.isEmpty) {
-                return const Center(child: Text("No completed tasks found."));
+                return const Center(child: Text("No tasks found."));
               }
 
               return _buildTaskListView(controller.completedTasks);

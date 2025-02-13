@@ -15,14 +15,14 @@ class VerifyOTPController extends GetxController {
     bool isSuccess = false;
     _inProgress = true;
     update();
-    final NetworkResponse response =
-    await NetworkCaller.getRequest(url: Urls.recoverVerifyOtpUrl(email, Otp));
+    final NetworkResponse response = await NetworkCaller.getRequest(
+        url: Urls.recoverVerifyOtpUrl(email, Otp));
     if (response.isSuccess) {
       isSuccess = true;
       _errorMessage = null;
-    }  else {
-        _errorMessage = response.errorMessage;
-      }
+    } else {
+      _errorMessage = response.errorMessage;
+    }
     _inProgress = false;
     update();
     return isSuccess;

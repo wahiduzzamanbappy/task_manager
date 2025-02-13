@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_manager/data/models/user_model.dart';
+import 'package:task_manager/ui/screens/splash_screen.dart';
 
 class AuthController extends GetxController {
   String? accessToken;
@@ -52,6 +53,6 @@ class AuthController extends GetxController {
     accessToken;
     userModel;
 
-    Get.offAllNamed('/signIn');
+    Get.offAllNamed(SplashScreen.name);
   }
 }

@@ -10,9 +10,11 @@ class CancelledTaskListController extends GetxController {
   bool get inProgress => _inProgress;
 
   String? _errorMessage;
+
   String? get errorMessage => _errorMessage;
 
   TaskListByStatusModel? _cancelledTaskListModel;
+
   List<TaskModel> get cancelledTasks => _cancelledTaskListModel?.taskList ?? [];
 
   Future<void> getCancelledTaskList() async {

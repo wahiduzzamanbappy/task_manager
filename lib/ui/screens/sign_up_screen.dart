@@ -104,21 +104,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   },
                 ),
                 const SizedBox(height: 24),
-                GetBuilder<SignUpController>(
-                  builder: (controller) {
-                    return Visibility(
-                      visible: controller.inProgress == false,
-                      replacement: CenteredCircularProgressIndicator(),
-                      child: ElevatedButton(
-                        onPressed: _onTapSignUpButton,
-                        child: Icon(
-                          Icons.arrow_circle_right_outlined,
-                          color: Colors.white,
-                        ),
+                GetBuilder<SignUpController>(builder: (controller) {
+                  return Visibility(
+                    visible: controller.inProgress == false,
+                    replacement: CenteredCircularProgressIndicator(),
+                    child: ElevatedButton(
+                      onPressed: _onTapSignUpButton,
+                      child: Icon(
+                        Icons.arrow_circle_right_outlined,
+                        color: Colors.white,
                       ),
-                    );
-                  }
-                ),
+                    ),
+                  );
+                }),
                 const SizedBox(height: 48),
                 Center(
                   child: Column(
@@ -151,7 +149,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     if (isSuccess) {
       _clearTextFields();
-     Get.toNamed(SignInScreen.name);
+      Get.toNamed(SignInScreen.name);
       showSnackBarMessage(context, 'New user registration successful!');
     } else {
       showSnackBarMessage(context, _signUpController.errorMessage!);

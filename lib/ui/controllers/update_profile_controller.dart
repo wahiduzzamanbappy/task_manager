@@ -6,9 +6,11 @@ import '../../data/service/network_caller.dart';
 
 class UpdateProfileController extends GetxController {
   bool _inProgress = false;
+
   bool get inProgress => _inProgress;
 
   String? _errorMessage;
+
   String? get errorMessage => _errorMessage;
 
   XFile? _pickedImage;

@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:task_manager/data/utils/urls.dart';
 import '../../data/service/network_caller.dart';
 
-class AddNewTaskController extends GetxController {
+class ResetPasswordController extends GetxController {
   bool _inProgress = false;
 
   bool get inProgress => _inProgress;
@@ -11,23 +11,23 @@ class AddNewTaskController extends GetxController {
 
   String? get errorMessage => _errorMessage;
 
-  Future<bool> addNewTask (String title, String description) async {
+  Future<bool> resetPassword(String email, String password, String otp) async {
     bool isSuccess = false;
     _inProgress = true;
     update();
     Map<String, dynamic> requestBody = {
-      "title": title,
-      "description": description,
-      "status": "New"
+      "email": email.trim(),
+      "OTP": otp.toString(),
+      "password": password,
     };
     final NetworkResponse response = await NetworkCaller.postRequest(
-        url: Urls.createTaskUrl, body: requestBody);
-    if (response.isSuccess) {
-      isSuccess = true;
-      _errorMessage = null;
+        url: Urls.recoverResetPassUrl, body: requestBody);
+
+    if (response.responseData?["status"] == "success") {
+      _errorMessage = 'Password updated successful!';
     } else {
-        _errorMessage = response.errorMessage;
-      }
+      _errorMessage = response.errorMessage;
+    }
     _inProgress = false;
     update();
     return isSuccess;

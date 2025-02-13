@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:task_manager/controller_binder.dart';
 import 'package:task_manager/ui/screens/forgot_password_verify_email_screen.dart';
+import 'package:task_manager/ui/screens/forgot_password_verify_otp_screen.dart';
 import 'package:task_manager/ui/screens/main_bottom_nav_screen.dart';
 import 'package:task_manager/ui/screens/add_new_task_screen.dart';
+import 'package:task_manager/ui/screens/reset_password_screen.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
 import 'package:task_manager/ui/screens/sign_up_screen.dart';
 import 'package:task_manager/ui/screens/splash_screen.dart';
@@ -12,13 +14,14 @@ import 'package:task_manager/ui/utils/app_color.dart';
 
 class TaskManagerApp extends StatelessWidget {
   const TaskManagerApp({super.key});
-  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+  //static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      navigatorKey: navigatorKey,
+      //navigatorKey: navigatorKey,
       initialRoute: '/',
       initialBinding: ControllerBinder(),
       theme: ThemeData(
@@ -65,7 +68,22 @@ class TaskManagerApp extends StatelessWidget {
           widget = const SignUpScreen();
         } else if (settings.name == ForgotPasswordVerifyEmailScreen.name) {
           widget = const ForgotPasswordVerifyEmailScreen();
-        }  else if (settings.name == MainBottomNavScreen.name) {
+        } else if (settings.name == ForgotPasswordVerifyOtpScreen.name) {
+          final String? email = settings.arguments as String?;
+          if (email != null) {
+            return MaterialPageRoute(
+                builder: (_) => ForgotPasswordVerifyOtpScreen(email: email));
+          }
+        } else if (settings.name == ResetPasswordScreen.name) {
+          final args = settings.arguments as Map<String, dynamic>?;
+          final String? email = args?['email'];
+          final String? otp = args?['otp'];
+
+          if (email != null && otp != null) {
+            return MaterialPageRoute(
+                builder: (_) => ResetPasswordScreen(email: email, otp: otp));
+          }
+        } else if (settings.name == MainBottomNavScreen.name) {
           widget = const MainBottomNavScreen();
         } else if (settings.name == AddNewTaskScreen.name) {
           widget = const AddNewTaskScreen();

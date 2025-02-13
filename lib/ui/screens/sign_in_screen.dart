@@ -1,16 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:task_manager/data/models/user_model.dart';
-import 'package:task_manager/data/utils/urls.dart';
 import 'package:task_manager/ui/controllers/sign_in_controller.dart';
-import 'package:task_manager/ui/controllers/auth_controller.dart';
 import 'package:task_manager/ui/screens/forgot_password_verify_email_screen.dart';
 import 'package:task_manager/ui/screens/main_bottom_nav_screen.dart';
 import 'package:task_manager/ui/screens/sign_up_screen.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 import 'package:task_manager/ui/widgets/snack_bar_message.dart';
-import '../../data/service/network_caller.dart';
 import '../utils/app_color.dart';
 import '../widgets/centered_circle_indicator.dart';
 
@@ -95,7 +91,10 @@ class _SignInScreenState extends State<SignInScreen> {
                       replacement: const CenteredCircularProgressIndicator(),
                       child: ElevatedButton(
                         onPressed: _onTapSignInButton,
-                        child: const Icon(Icons.arrow_circle_right_outlined, color: Colors.white,),
+                        child: const Icon(
+                          Icons.arrow_circle_right_outlined,
+                          color: Colors.white,
+                        ),
                       ),
                     );
                   }),

@@ -1,8 +1,9 @@
 import 'package:get/get.dart';
+import 'package:task_manager/data/models/task_model.dart';
 import 'package:task_manager/data/utils/urls.dart';
 import '../../data/service/network_caller.dart';
 
-class VerifyEmailController extends GetxController {
+class UpdateTaskStatusController extends GetxController {
   bool _inProgress = false;
 
   bool get inProgress => _inProgress;
@@ -10,19 +11,25 @@ class VerifyEmailController extends GetxController {
   String? _errorMessage;
 
   String? get errorMessage => _errorMessage;
+  TaskModel? taskModel;
 
-  Future<bool> verifyEmail(String email) async {
+  Future<bool> updateTaskStatus(String id, String status) async {
     bool isSuccess = false;
     _inProgress = true;
     update();
-    final NetworkResponse response =
-        await NetworkCaller.getRequest(url: Urls.recoverVerifyEmailUrl(email));
+
+    final NetworkResponse response = await NetworkCaller.getRequest(
+      url: Urls.updateStatusUrl(
+        taskModel?.sId ?? id,
+        taskModel?.status ?? status,
+      ),
+    );
+
     if (response.isSuccess) {
+      _errorMessage = 'Task Status updated successfully!';
       isSuccess = true;
-      _errorMessage = 'A 6 digit OTP sent to your email.';
-    } else {
-      _errorMessage = response.errorMessage;
     }
+
     _inProgress = false;
     update();
     return isSuccess;
